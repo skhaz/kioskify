@@ -27,7 +27,7 @@ export default ({ item, index }) => {
             provided.draggableProps.style
           )}
         >
-          <ListItem>
+          <ListItem button>
             <ListItemText
               primary={item.primary}
               secondary={item.secondary}

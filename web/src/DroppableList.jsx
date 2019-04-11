@@ -29,7 +29,7 @@ export default ({ column, items }) => {
     <Droppable droppableId={column.id}>
       {(provided, snapshot) => (
         <RootRef rootRef={provided.innerRef}>
-          <List className={classes.list} style={stylize(snapshot.isDraggingOver)}>
+          <List disablePadding className={classes.list} style={stylize(snapshot.isDraggingOver)}>
             {items.map((item, index) => (
               <DraggableItem key={item.id} item={item} index={index} />
             ))}

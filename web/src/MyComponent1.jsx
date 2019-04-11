@@ -30,7 +30,7 @@ export default () => {
         <CardMedia className={classes.media} image={url} />
         <CardContent>
           <Typography gutterBottom variant="subtitle2">
-            O que é Psicanálise
+            Bump
           </Typography>
         </CardContent>
       </CardActionArea>
