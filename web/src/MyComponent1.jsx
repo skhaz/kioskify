@@ -32,9 +32,6 @@ export default () => {
           <Typography gutterBottom variant="subtitle2">
             O que é Psicanálise
           </Typography>
-          <Typography variant="caption">
-            Lizards are a widespread group 
-          </Typography>
         </CardContent>
       </CardActionArea>
     </Card>
