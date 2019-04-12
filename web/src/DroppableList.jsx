@@ -7,12 +7,13 @@ import RootRef from '@material-ui/core/RootRef'
 import List from '@material-ui/core/List'
 
 import DraggableItem from './DraggableItem'
+import { withWidth } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => {
   return {
     list: {
-      overflow: 'auto',
-      minHeight: '100vh',
+      overflow: 'scroll',
+      height: 'calc(100vh - 64px)',
     }
   }
 })

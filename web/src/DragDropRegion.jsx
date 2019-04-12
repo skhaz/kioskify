@@ -16,12 +16,22 @@ const initialData = {
     'task-5': { id: 'task-5', primary: 'content 5', secondary: 5},
     'task-6': { id: 'task-6', primary: 'content 6', secondary: 6},
     'task-7': { id: 'task-7', primary: 'content 7', secondary: 7},
+    'task-8': { id: 'task-8', primary: 'content 8', secondary: 8},
+    'task-9': { id: 'task-9', primary: 'content 9', secondary: 9},
+    'task-10': { id: 'task-10', primary: 'content 10', secondary: 10},
+    'task-11': { id: 'task-11', primary: 'content 11', secondary: 11},
+    'task-12': { id: 'task-12', primary: 'content 12', secondary: 12},
+    'task-13': { id: 'task-13', primary: 'content 13', secondary: 13},
+    'task-14': { id: 'task-14', primary: 'content 14', secondary: 14},
+    'task-15': { id: 'task-15', primary: 'content 15', secondary: 15},
+    'task-16': { id: 'task-16', primary: 'content 16', secondary: 16},
+
   },
   columns: {
     'column-1': {
       id: 'column-1',
       title: 'title 1',
-      taskIds: ['task-1', 'task-2', 'task-3', 'task-4', 'task-5', 'task-6', 'task-7'],
+      taskIds: ['task-1', 'task-2', 'task-3', 'task-4', 'task-5', 'task-6', 'task-7', 'task-8', 'task-9', 'task-10', 'task-11', 'task-12', 'task-13', 'task-14', 'task-15', 'task-16'],
     },
     'column-2': {
       id: 'column-2',
@@ -35,7 +45,6 @@ const useStyles = makeStyles(theme => {
   return {
     root: {
       flexGrow: 1,
-      minHeight: '100vh' 
     }
   }
 })

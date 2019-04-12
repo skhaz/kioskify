@@ -11,8 +11,9 @@
     "react-scripts": "2.1.8"
   },
   "scripts": {
+    "clean": "rm -rf .firebase build",
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "yarn clean && react-scripts build",
     "deploy": "yarn build && firebase deploy --only hosting"
   },
   "eslintConfig": {
