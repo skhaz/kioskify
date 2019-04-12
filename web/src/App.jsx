@@ -22,8 +22,8 @@ const LinkTab = props => <Tab component="a" onClick={event => event.preventDefau
 
 const theme = createMuiTheme({
   palette: {
-    primary: indigo,
-    secondary: teal,
+    primary: teal,
+    secondary: indigo,
   },
   typography: {
     useNextVariants: true,
@@ -50,8 +50,8 @@ export default () => {
   return (
     <MuiThemeProvider theme={theme}>
       <div className={classes.root}>
-        <AppBar position="static">
-          <Tabs variant="fullWidth" value={value} onChange={handleChange}>
+        <AppBar position="static" color="default">
+          <Tabs variant="fullWidth" indicatorColor="primary" value={value} onChange={handleChange}>
             <LinkTab label="Page One" href="page1" />
             <LinkTab label="Page Two" href="page2" />
             <LinkTab label="Page Three" href="page3" />

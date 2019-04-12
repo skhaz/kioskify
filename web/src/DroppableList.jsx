@@ -12,6 +12,7 @@ const useStyles = makeStyles(theme => {
   return {
     list: {
       overflow: 'scroll',
+      overflowX: 'hidden',
       height: 'calc(100vh - 64px)',
     }
   }
