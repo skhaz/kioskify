@@ -8,13 +8,11 @@ import List from '@material-ui/core/List'
 
 import DraggableItem from './DraggableItem'
 
-const useStyles = makeStyles(theme => {
-  return {
-    list: {
-      overflow: 'scroll',
-      overflowX: 'hidden',
-      height: 'calc(100vh - 64px)',
-    }
+const useStyles = makeStyles({
+  list: {
+    overflowY: 'scroll',
+    overflowX: 'hidden',
+    height: 'calc(100vh - 96pt)',
   }
 })
 
