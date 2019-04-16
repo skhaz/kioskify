@@ -3,7 +3,7 @@ import './bootstrap'
 import React, { useState } from 'react'
 
 import { createMuiTheme } from '@material-ui/core/styles'
-import { makeStyles, useTheme, ThemeProvider } from '@material-ui/styles'
+import { makeStyles, ThemeProvider } from '@material-ui/styles'
 import { deepPurple, red } from '@material-ui/core/colors'
 
 import CssBaseline from '@material-ui/core/CssBaseline'
