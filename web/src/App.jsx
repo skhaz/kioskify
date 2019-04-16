@@ -3,46 +3,32 @@ import './bootstrap'
 import React, { useState } from 'react'
 
 import { createMuiTheme } from '@material-ui/core/styles'
-import { ThemeProvider, makeStyles } from '@material-ui/styles'
-import teal from '@material-ui/core/colors/teal'
-import indigo from '@material-ui/core/colors/indigo'
+import { makeStyles, useTheme, ThemeProvider } from '@material-ui/styles'
+import { deepPurple, red } from '@material-ui/core/colors'
 
+import CssBaseline from '@material-ui/core/CssBaseline'
 import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Fab from '@material-ui/core/Fab'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
+import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
-import Paper from '@material-ui/core/Paper'
-import CssBaseline from '@material-ui/core/CssBaseline'
-
 import IconButton from '@material-ui/core/IconButton'
-import MoreIcon from '@material-ui/icons/More'
-import SearchIcon from '@material-ui/icons/Search'
-import AddIcon from '@material-ui/icons/Add'
 import MenuIcon from '@material-ui/icons/Menu'
 
-import DragDropRegion from './DragDropRegion'
-
-const theme = createMuiTheme({
-  palette: {
-    primary: teal,
-    secondary: indigo
-  },
-  typography: {
-    useNextVariants: true
-  }
-})
+import PlaylistEditor from './PlaylistEditor'
 
 const useStyles = makeStyles({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
+  },
+  grow: {
+    flexGrow: 1,
+  },
+  menuButton: {
+    marginLeft: -12,
+    marginRight: 20,
   },
 })
-
-const initialState = {
-  tabIndex: 0
-}
 
 const TabContainer = props => (
   <Typography component='div' style={{ padding: 8, height: 2 }}>
@@ -54,21 +40,20 @@ const LinkTab = props => (
   <Tab component='a' onClick={event => event.preventDefault()} {...props} />
 )
 
-export default () => {
+const App = () => {
 
-  const [state, setState] = useState(initialState)
+  const [index, setIndex] = useState(2)
 
   const classes = useStyles()
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <>
       <AppBar position='static'>
         <Toolbar>
           <IconButton className={classes.menuButton} color='inherit' aria-label='Menu'>
             <MenuIcon />
           </IconButton>
-          <Typography variant='h6' color='inherit'>
+          <Typography variant='h6' color='inherit' className={classes.grow}>
             Kioskify
           </Typography>
         </Toolbar>
@@ -77,17 +62,37 @@ export default () => {
         <Tabs
           variant='fullWidth'
           indicatorColor='primary'
-          value={state.tabIndex}
-          onChange={(_, newValue) => setState({ ...state, tabIndex: newValue })}
+          value={index}
+          onChange={(_, newValue) => setIndex(newValue)}
         >
-          <LinkTab label='Page One' href='page1' />
-          <LinkTab label='Page Two' href='page2' />
-          <LinkTab label='Page Three' href='page3' />
+          <LinkTab label='analytics' href='#' />
+          <LinkTab label='machines' href='#' />
+          <LinkTab label='playlist' href='#' />
         </Tabs>
       </AppBar>
-      {state.tabIndex === 2 && <TabContainer>Page One</TabContainer>}
-      {state.tabIndex === 1 && (<TabContainer><Paper>Page Two></Paper></TabContainer>)}
-      {state.tabIndex === 0 && (<TabContainer><DragDropRegion /></TabContainer>)}
+      {index === 0 && <TabContainer>Page One</TabContainer>}
+      {index === 1 && <TabContainer>Page Two</TabContainer>}
+      {index === 2 && <TabContainer><PlaylistEditor /></TabContainer>}
+    </>
+  )
+}
+
+export default () => {
+
+  const theme = createMuiTheme({
+    palette: {
+      primary: deepPurple,
+      secondary: red
+    },
+    typography: {
+      useNextVariants: true
+    }
+  })
+
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <App />
     </ThemeProvider>
   )
 }

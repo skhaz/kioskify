@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { Draggable } from 'react-beautiful-dnd'
-
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
+
+import { Draggable } from 'react-beautiful-dnd'
 
 export default ({ item, index }) => {
 
