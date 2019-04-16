@@ -14,7 +14,7 @@ import withMobileDialog from '@material-ui/core/withMobileDialog'
 
 const AddDialog = (props) => {
 
-  const { open, fullScreen, onClose, onSubmit } = props
+  const { fullScreen, open, onClose, onSubmit } = props
 
   const [yid, setYid] = useState('')
 
@@ -93,10 +93,6 @@ const AddDialog = (props) => {
       </DialogActions>
     </Dialog>
   )
-}
-
-AddDialog.propTypes = {
-  fullScreen: PropTypes.bool.isRequired,
 }
 
 export default withMobileDialog()(AddDialog)
