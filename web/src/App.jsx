@@ -1,11 +1,8 @@
 import './helpers/bootstrap'
-
 import React, { useState } from 'react'
-
 import { createMuiTheme } from '@material-ui/core/styles'
 import { makeStyles, ThemeProvider } from '@material-ui/styles'
 import { deepPurple, red } from '@material-ui/core/colors'
-
 import CssBaseline from '@material-ui/core/CssBaseline'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
@@ -14,7 +11,6 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
-
 import Editor from './playlist/Editor'
 
 const useStyles = makeStyles({

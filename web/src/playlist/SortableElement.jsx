@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react'
-
 import { sortableElement } from 'react-sortable-hoc'
-
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
-
 import firebase from '../helpers/firebase'
 
 const firestore = firebase.firestore()
@@ -16,19 +13,19 @@ export default sortableElement((props) => {
   const [state, setState] = useState({})
 
   const handleSnapshot = doc => {
-    const { title, yid, ready, error } = doc.data()
-
-    const thumbnail = `<img src="https://i.ytimg.com/vi/${yid}/mqdefault.jpg" />`
+    const { title, ready, error } = doc.data()
 
     const status = error ? 'error' : ready ? 'done' : 'processing'
 
-    setState({ title, thumbnail, status })
+    setState({ title, status })
   }
 
   useEffect(() => {
+    const { vid: id } = value
+
     const unsubscribe = firestore
       .collection('videos')
-      .doc(value.vid)
+      .doc(id)
       .onSnapshot(handleSnapshot)
 
     return () => {
@@ -45,7 +42,7 @@ export default sortableElement((props) => {
       selected={selected}
       onClick={handleClick}
     >
-      {state.thumbnail && (
+      {state.status && (
         <ListItemText
           primary={state.title || '...'}
           secondary={state.status}

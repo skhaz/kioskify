@@ -1,10 +1,7 @@
 import React, { useState } from "react"
-
+import { sortableContainer } from "react-sortable-hoc"
 import { makeStyles } from '@material-ui/styles'
 import List from "@material-ui/core/List"
-
-import { sortableContainer } from "react-sortable-hoc"
-
 import SortableElement from "./SortableElement"
 
 const useStyles = makeStyles({

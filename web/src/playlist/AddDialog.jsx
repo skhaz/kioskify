@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-
 import urlParser from 'js-video-url-parser'
-
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Dialog from '@material-ui/core/Dialog'

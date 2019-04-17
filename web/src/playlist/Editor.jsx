@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react'
-
+import { debounce } from 'throttle-debounce'
+import arrayMove from 'array-move'
 import { makeStyles } from '@material-ui/styles'
 import Paper from '@material-ui/core/Paper'
 import AddIcon from '@material-ui/icons/Add'
 import Fab from '@material-ui/core/Fab'
-
-import { debounce } from 'throttle-debounce'
-import arrayMove from 'array-move'
-
 import firebase from '../helpers/firebase'
-
 import AddDialog from './AddDialog'
 import SortableContainer from './SortableContainer'
 import PreviewDialog from './PreviewDialog'
@@ -78,13 +74,13 @@ export default () => {
     setItems(arrayMove(items, oldIndex, newIndex))
   }
 
-  const handleClick = async ({ vid }) => {
-    const doc = await firestore
+  const handleClick = async ({ vid: id }) => {
+    const document = await firestore
       .collection('videos')
-      .doc(vid)
+      .doc(id)
       .get()
 
-    const { ready, title, url } = doc.data()
+    const { ready, title, url } = document.data()
 
     if (!ready) {
       return
@@ -132,12 +128,11 @@ export default () => {
       >
         <AddIcon />
       </Fab>
-
       <PreviewDialog
         open={preview.open}
         url={preview.url}
         title={preview.title}
-        onClose={() => setPreview({ ...preview, open: false })}
+        onClose={() => setPreview({ open: false })}
       />
     </Paper>
   )
