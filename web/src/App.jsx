@@ -1,4 +1,4 @@
-import './bootstrap'
+import './helpers/bootstrap'
 
 import React, { useState } from 'react'
 
@@ -15,6 +15,8 @@ import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 
+import PlaylistEditor from './playlist/PlaylistEditor'
+
 const useStyles = makeStyles({
   root: {
     flexGrow: 1,
@@ -28,21 +30,21 @@ const useStyles = makeStyles({
   },
 })
 
-const TabContainer = props => (
-  <Typography component='div' style={{ padding: 8, height: 2 }}>
-    {props.children}
-  </Typography>
-)
-
-const LinkTab = props => (
-  <Tab component='a' onClick={event => event.preventDefault()} {...props} />
-)
-
 const App = () => {
 
   const [index, setIndex] = useState(2)
 
   const classes = useStyles()
+
+  const TabContainer = props => (
+    <Typography component='div' style={{ padding: 8, height: 2 }}>
+      {props.children}
+    </Typography>
+  )
+
+  const LinkTab = props => (
+    <Tab component='a' onClick={event => event.preventDefault()} {...props} />
+  )
 
   return (
     <>
@@ -70,7 +72,7 @@ const App = () => {
       </AppBar>
       {index === 0 && <TabContainer></TabContainer>}
       {index === 1 && <TabContainer></TabContainer>}
-      {index === 2 && <TabContainer></TabContainer>}
+      {index === 2 && <TabContainer><PlaylistEditor /></TabContainer>}
     </>
   )
 }
