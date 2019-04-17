@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 import PlaylistEditor from './playlist/PlaylistEditor'
+import MachineManager from './machine/MachineManager'
 
 const useStyles = makeStyles({
   grow: {
@@ -65,7 +66,7 @@ const App = () => {
         </Tabs>
       </AppBar>
       {index === 0 && <TabContainer></TabContainer>}
-      {index === 1 && <TabContainer></TabContainer>}
+      {index === 1 && <TabContainer><MachineManager /></TabContainer>}
       {index === 2 && <TabContainer><PlaylistEditor /></TabContainer>}
     </>
   )
