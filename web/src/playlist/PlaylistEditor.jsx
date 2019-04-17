@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
   fab: {
     position: 'absolute',
     bottom: theme.spacing.unit * 2,
-    right: theme.spacing.unit * 4
+    right: theme.spacing.unit * 2
   }
 }))
 
@@ -86,7 +86,7 @@ export default () => {
     const batch = firestore.batch()
     const r0 = firestore.collection('videos').doc()
     const r1 = query.empty ? r0 : query.docs[0].ref
-    batch.set(r1, { yid, gid })
+    batch.set(r1, { yid, gid }, { merge: true })
     const r2 = firestore.collection('v1').doc()
     batch.set(r2, { gid, vid: r1, '#': items.length })
     return batch.commit()

@@ -4,12 +4,7 @@ import { sortableElement } from 'react-sortable-hoc'
 
 import { makeStyles } from '@material-ui/styles'
 import ListItem from '@material-ui/core/ListItem'
-import Card from '@material-ui/core/Card'
-import CardMedia from '@material-ui/core/CardMedia'
-import Typography from '@material-ui/core/Typography'
-import CardHeader from '@material-ui/core/CardHeader'
-import IconButton from '@material-ui/core/IconButton'
-import MoreVertIcon from '@material-ui/icons/MoreVert'
+import ListItemText from '@material-ui/core/ListItemText'
 
 import firebase from '../helpers/firebase'
 
@@ -17,7 +12,7 @@ const firestore = firebase.firestore()
 
 const useStyles = makeStyles({
   card: {
-    width: 320
+    //width: 320
   },
   media: {
     width: 320,
@@ -25,26 +20,28 @@ const useStyles = makeStyles({
   },
 })
 
-export default sortableElement(({ value, selected, onClick }) => {
+export default sortableElement((props) => {
 
-  const [holder, setHolder] = useState({})
+  const { value, selected, onClick } = props
 
   const classes = useStyles()
+
+  const [state, setState] = useState({})
 
   const handleSnapshot = doc => {
     const { title, yid, ready, error } = doc.data()
 
     const thumbnail = `https://i.ytimg.com/vi/${yid}/mqdefault.jpg`
 
-    setHolder({ title, ready, thumbnail, error })
+    const status = error ? 'error' : ready ? 'done' : 'processing'
+
+    setState({ title, thumbnail, status })
   }
 
   useEffect(() => {
-    const { vid } = value
-
     const unsubscribe = firestore
       .collection('videos')
-      .doc(vid)
+      .doc(value.vid)
       .onSnapshot(handleSnapshot)
 
     return () => {
@@ -57,23 +54,16 @@ export default sortableElement(({ value, selected, onClick }) => {
   }
 
   return (
-    <ListItem selected={selected} onClick={handleClick}>
-      <Card className={classes.card}>
-        <CardHeader
-          action={
-            <IconButton>
-              <MoreVertIcon />
-            </IconButton>
-          }
-          title={holder.title}
-          subheader={holder.error ? 'error' : holder.ready ? 'done' : 'processing'}
+    <ListItem
+      selected={selected}
+      onClick={handleClick}
+    >
+      {state.thumbnail && (
+        <ListItemText
+          primary={state.title || '...'}
+          secondary={state.status}
         />
-        <CardMedia
-          component='img'
-          className={classes.media}
-          image={holder.thumbnail}
-        />
-      </Card>
+      )}
     </ListItem>
   )
 })

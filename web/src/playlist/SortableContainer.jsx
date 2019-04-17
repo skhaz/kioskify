@@ -26,7 +26,11 @@ export default sortableContainer(({ items, onClick }) => {
   }
 
   return (
-    <List className={classes.list}>
+    <List
+      disablePadding
+      dense
+      className={classes.list}
+    >
       {items && items.map((item, index) => (
         <SortableElement
           index={index}
