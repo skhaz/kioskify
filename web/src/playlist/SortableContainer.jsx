@@ -24,6 +24,7 @@ export default sortableContainer(({ items, onClick }) => {
 
   return (
     <List
+      dense
       disablePadding
       className={classes.list}
     >

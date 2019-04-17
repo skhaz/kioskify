@@ -39,6 +39,7 @@ export default () => {
 
     querySnapshot.forEach(doc => {
       const { vid: { id: vid }, '#': index } = doc.data()
+
       const { id } = doc
 
       arr.push({ id, vid, index })

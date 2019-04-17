@@ -12,8 +12,12 @@ export default sortableElement((props) => {
 
   const [state, setState] = useState({})
 
-  const handleSnapshot = doc => {
-    const { title, ready, error } = doc.data()
+  const handleSnapshot = document => {
+    if (!document) {
+      return
+    }
+
+    const { title, ready, error } = document.data()
 
     const status = error ? 'error' : ready ? 'done' : 'processing'
 
