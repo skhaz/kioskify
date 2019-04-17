@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const SortableItem = props => {
+const SortableItem = (props) => {
 
   const [expanded, setExpanded] = useState()
 
@@ -129,33 +129,4 @@ const SortableItem = props => {
   )
 }
 
-// export default (SortableItem)
-
 export default sortableElement((SortableItem))
-
-/*
-        <CardActionArea>
-          <CardMedia
-            className={classes.media}
-            image='https://material-ui.com/static/images/cards/contemplative-reptile.jpg'
-            title='Contemplative Reptile'
-          />
-          <CardContent>
-            <Typography gutterBottom variant='h5' component='h2'>
-              {value.name}
-            </Typography>
-            <Typography component='p'>
-              Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging
-              across all continents except Antarctica
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-        <CardActions>
-        <Button size='small' color='primary'>
-          Share
-        </Button>
-        <Button size='small' color='primary'>
-          Learn More
-        </Button>
-      </CardActions>
-*/

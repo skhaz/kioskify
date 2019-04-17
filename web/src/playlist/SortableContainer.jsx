@@ -11,14 +11,13 @@ const useStyles = makeStyles(theme => ({
   list: {
     overflowY: 'scroll',
     overflowX: 'hidden',
-    height: 'calc(100vh - 124pt)',
+    height: 'calc(100vh - 96pt)',
   },
 }))
 
-const SortableList = props => {
-  const [selected, setSelected] = useState()
+const SortableList = ({ items, onClick }) => {
 
-  const { items, onClick } = props
+  const [selected, setSelected] = useState()
 
   const classes = useStyles()
 
@@ -28,7 +27,7 @@ const SortableList = props => {
 
   return (
     <List className={classes.list}>
-      {items.map((item, index) => (
+      {items && items.map((item, index) => (
         <SortableElement
           index={index}
           value={item}

@@ -1,13 +1,13 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
+
 import { makeStyles } from '@material-ui/styles'
+import Paper from '@material-ui/core/Paper'
+import AddIcon from '@material-ui/icons/Add'
+import Fab from '@material-ui/core/Fab'
 
 import arrayMove from 'array-move'
-
-import firebase from '../helpers/firebase'
 import { debounce } from 'throttle-debounce'
-
-import Button from '@material-ui/core/Button'
-import Paper from '@material-ui/core/Paper'
+import firebase from '../helpers/firebase'
 
 import AddDialog from './AddDialog'
 import SortableContainer from './SortableContainer'
@@ -15,11 +15,11 @@ import SortableContainer from './SortableContainer'
 const firestore = firebase.firestore()
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    backgroundColor: theme.palette.background.paper,
-    display: 'flex'
-  },
-
+  fab: {
+    position: 'absolute',
+    bottom: theme.spacing.unit * 2,
+    right: theme.spacing.unit * 4
+  }
 }))
 
 export default () => {
@@ -106,12 +106,7 @@ export default () => {
 
   return (
     <Paper>
-      <Button onClick={handlePublish}>
-        Publish
-      </Button>
-
       <SortableContainer
-        className={classes.root}
         items={items}
         onSortEnd={handleSortEnd}
         distance={2}
@@ -123,6 +118,14 @@ export default () => {
         onSubmit={(value) => { handleClose() || handleSubmit(value) }}
         onClose={handleClose}
       />
+
+      <Fab
+        color='secondary'
+        className={classes.fab}
+        onClick={() => setVisible(true)}
+      >
+        <AddIcon />
+      </Fab>
     </Paper>
   )
 }
