@@ -96,7 +96,6 @@ export default () => {
     const query = await firestore
       .collection('videos')
       .where('yid', '==', yid)
-      .where('gid', '==', gid)
       .get()
 
     const batch = firestore.batch()
