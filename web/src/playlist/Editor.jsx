@@ -12,7 +12,7 @@ import firebase from '../helpers/firebase'
 
 import AddDialog from './AddDialog'
 import SortableContainer from './SortableContainer'
-import VideoPreview from './VideoPreview'
+import PreviewDialog from './PreviewDialog'
 
 const firestore = firebase.firestore()
 
@@ -133,7 +133,7 @@ export default () => {
         <AddIcon />
       </Fab>
 
-      <VideoPreview
+      <PreviewDialog
         open={preview.open}
         url={preview.url}
         title={preview.title}

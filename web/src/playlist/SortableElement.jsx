@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 
 import { sortableElement } from 'react-sortable-hoc'
 
-import { makeStyles } from '@material-ui/styles'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 
@@ -10,21 +9,9 @@ import firebase from '../helpers/firebase'
 
 const firestore = firebase.firestore()
 
-const useStyles = makeStyles({
-  card: {
-    //width: 320
-  },
-  media: {
-    width: 320,
-    height: 180
-  },
-})
-
 export default sortableElement((props) => {
 
   const { value, selected, onClick } = props
-
-  const classes = useStyles()
 
   const [state, setState] = useState({})
 

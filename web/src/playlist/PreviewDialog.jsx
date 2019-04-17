@@ -1,14 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
 
-import { makeStyles } from '@material-ui/styles'
 import withMobileDialog from '@material-ui/core/withMobileDialog'
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
 import Button from '@material-ui/core/Button'
-import Typography from '@material-ui/core/Typography'
 
 import ReactPlayer from 'react-player'
 
