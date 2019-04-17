@@ -55,7 +55,6 @@ export default sortableElement((props) => {
 
   return (
     <ListItem
-      rightIconButton={state.thumbnail}
       selected={selected}
       onClick={handleClick}
     >

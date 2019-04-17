@@ -15,7 +15,7 @@ import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 
-import PlaylistEditor from './playlist/PlaylistEditor'
+import PlaylistEditor from './editor/PlaylistEditor'
 
 const useStyles = makeStyles({
   grow: {

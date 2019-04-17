@@ -5,12 +5,14 @@ import Paper from '@material-ui/core/Paper'
 import AddIcon from '@material-ui/icons/Add'
 import Fab from '@material-ui/core/Fab'
 
-import arrayMove from 'array-move'
 import { debounce } from 'throttle-debounce'
+import arrayMove from 'array-move'
+
 import firebase from '../helpers/firebase'
 
 import AddDialog from './AddDialog'
 import SortableContainer from './SortableContainer'
+import VideoPreview from './VideoPreview'
 
 const firestore = firebase.firestore()
 
@@ -74,6 +76,10 @@ export default () => {
     setItems(arrayMove(items, oldIndex, newIndex))
   }
 
+  const handleClick = (item) => {
+    console.log('>>>', item)
+  }
+
   const handleSubmit = async (yid) => {
     const gid = firestore.doc('groups/Z0pKmfYxMLw6RD7RMfN4')
 
@@ -97,6 +103,7 @@ export default () => {
       <SortableContainer
         items={items}
         onSortEnd={handleSortEnd}
+        onClick={handleClick}
         distance={2}
         lockAxis='y'
       />
@@ -112,6 +119,8 @@ export default () => {
       >
         <AddIcon />
       </Fab>
+
+      <VideoPreview />
     </Paper>
   )
 }
