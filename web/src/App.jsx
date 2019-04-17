@@ -78,6 +78,7 @@ export default () => {
       primary: deepPurple,
       secondary: red
     },
+
     typography: {
       useNextVariants: true
     }
