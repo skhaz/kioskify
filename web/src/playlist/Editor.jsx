@@ -100,11 +100,11 @@ export default () => {
       .get()
 
     const batch = firestore.batch()
-    const r0 = firestore.collection('videos').doc()
-    const r1 = query.empty ? r0 : query.docs[0].ref
-    batch.set(r1, { yid, gid }, { merge: true })
-    const r2 = firestore.collection('v1').doc()
-    batch.set(r2, { gid, vid: r1, '#': items.length })
+    const newRef = firestore.collection('videos').doc()
+    const docRef = query.empty ? newRef : query.docs[0].ref
+    batch.set(docRef, { yid, gid }, { merge: true })
+    const v1Ref = firestore.collection('v1').doc()
+    batch.set(v1Ref, { gid, vid: docRef, '#': items.length })
     return batch.commit()
   }
 
