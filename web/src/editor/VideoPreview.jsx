@@ -1,20 +1,47 @@
 import React, { useState } from 'react'
 
+import { makeStyles } from '@material-ui/styles'
+import withMobileDialog from '@material-ui/core/withMobileDialog'
 import Dialog from '@material-ui/core/Dialog'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import Button from '@material-ui/core/Button'
+import Typography from '@material-ui/core/Typography'
 
 import ReactPlayer from 'react-player'
 
+const VideoPreview = (props) => {
 
-export default () => {
+  const { fullScreen, open, onClose, url, title } = props
 
   return (
     <Dialog
-      open
-      onClose={() => console.log('close')}
+      fullScreen={fullScreen}
+      open={open}
+      onClose={onClose}
     >
-      <ReactPlayer muted playing width={'100%'} height={'100%'} url='https://gcs.kioskify.app/Z0pKmfYxMLw6RD7RMfN4/vsmQKSQpNFKKU8KuziuM.mp4' />
+      {open && (
+        <>
+          <DialogTitle>
+            {title}
+          </DialogTitle>
+          <ReactPlayer
+            playing
+            muted
+            width='100%'
+            url={url}
+          />
+          <DialogActions>
+            <Button onClick={onClose} color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </>
+      )}
     </Dialog>
   )
 }
 
+export default withMobileDialog()(VideoPreview)

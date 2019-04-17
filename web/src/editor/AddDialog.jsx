@@ -58,9 +58,8 @@ const AddDialog = (props) => {
       fullScreen={fullScreen}
       open={open}
       onClose={onClose}
-      aria-labelledby='form-dialog-title'
     >
-      <DialogTitle id='form-dialog-title'>Subscribe</DialogTitle>
+      <DialogTitle>Subscribe</DialogTitle>
       <DialogContent>
         <DialogContentText>
           To subscribe to this website, please enter your email address here. We will send

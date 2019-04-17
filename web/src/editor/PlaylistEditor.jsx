@@ -34,6 +34,8 @@ export default () => {
 
   const [visible, setVisible] = useState(false)
 
+  const [preview, setPreview] = useState({ open: false })
+
   const classes = useStyles()
 
   const onCompletion = querySnapshot => {
@@ -76,8 +78,19 @@ export default () => {
     setItems(arrayMove(items, oldIndex, newIndex))
   }
 
-  const handleClick = (item) => {
-    console.log('>>>', item)
+  const handleClick = async ({ vid }) => {
+    const doc = await firestore
+      .collection('videos')
+      .doc(vid)
+      .get()
+
+    const { ready, title, url } = doc.data()
+
+    if (!ready) {
+      return
+    }
+
+    setPreview({ open: true, title, url })
   }
 
   const handleSubmit = async (yid) => {
@@ -120,7 +133,12 @@ export default () => {
         <AddIcon />
       </Fab>
 
-      <VideoPreview />
+      <VideoPreview
+        open={preview.open}
+        url={preview.url}
+        title={preview.title}
+        onClose={() => setPreview({ ...preview, open: false })}
+      />
     </Paper>
   )
 }
