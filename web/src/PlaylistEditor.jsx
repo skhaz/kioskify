@@ -16,7 +16,22 @@ import DroppableList from './DroppableList'
 const initialData = {
   visible: false,
 
-  items: [],
+  videos: {},
+
+  columns: {
+    'column-1': {
+      id: 'column-1',
+      ids: [
+      ]
+    },
+
+    'column-2': {
+      id: 'column-2',
+      ids: [
+      ]
+    }
+  },
+  /*
 
   tasks: {
     'task-1': { id: 'task-1', primary: 'content 1', secondary: 1 },
@@ -36,6 +51,7 @@ const initialData = {
     'task-15': { id: 'task-15', primary: 'content 15', secondary: 15 },
     'task-16': { id: 'task-16', primary: 'content 16', secondary: 16 }
   },
+
   columns: {
     'column-1': {
       id: 'column-1',
@@ -65,6 +81,7 @@ const initialData = {
       taskIds: []
     }
   }
+  */
 }
 
 const useStyles = makeStyles(theme => ({
@@ -78,35 +95,83 @@ const useStyles = makeStyles(theme => ({
 const firestore = firebase.firestore()
 
 export default () => {
+
   const [state, setState] = useState(initialData)
 
   useEffect(() => {
     const unsubscribe = firestore
-      .collection('v1')
-      .orderBy('#')
-      .onSnapshot(onCompletion)
+      .collection('videos')
+      .onSnapshot((querySnapshot) => {
+        const videos = {}
+        querySnapshot.forEach(doc => videos[doc.id] = { id: doc.id, ...doc.data() })
+        // setVideos(arr)
+
+        const newState = {
+          ...state,
+          videos,
+          columns: {
+            ...state.columns,
+            'column-1': {
+              ...state.columns['column-1'],
+              ids: Object.keys(videos)
+            }
+          }
+        }
+
+        setState(newState)
+      })
 
     return () => {
       unsubscribe()
     }
   }, [])
 
-  const onCompletion = querySnapshot => {
-    const arr = []
+  /*
 
-    querySnapshot.forEach(doc => {
-      const {
-        vid: { id: vid },
-        '#': index
-      } = doc.data()
-      const { id } = doc
+  // const [videos, setVideos] = useState({})
 
-      arr.push({ id, vid, index })
-    })
+  // const [playlist, setPlaylist] = useState({})
 
-    console.log(arr)
-    setState({ ...state, items: arr })
-  }
+  useEffect(() => {
+    const unsubscribe = firestore
+      .collection('v1')
+      .where('gid', '==', group)
+      .orderBy('#')
+      .onSnapshot((querySnapshot) => {
+        const arr = []
+
+        querySnapshot.forEach(doc => {
+          const { vid: { id: vid }, '#': index } = doc.data()
+
+          const { id } = doc
+
+          arr.push({ id, vid, index })
+        })
+
+        setPlaylist(arr)
+
+      })
+
+    return () => {
+      unsubscribe()
+    }
+  }, [])
+
+  useEffect(() => {
+    const newState = {
+      ...state,
+      videos,
+      columns: {
+        ...state.columns,
+        'column-1': {
+          ...state.columns['column-1'],
+          ids: Object.keys(videos)
+        }
+      }
+    }
+
+    setState(newState)
+  }, [videos, playlist])
 
   const onPublish = debounce(300, async () => {
     const batch = firestore.batch()
@@ -117,9 +182,12 @@ export default () => {
 
     return batch.commit()
   })
+  */
 
   const onDragEnd = result => {
     const { source, destination, draggableId } = result
+
+    console.log('#onDragEnd', source, destination, draggableId)
 
     if (!destination) {
       return
@@ -137,13 +205,13 @@ export default () => {
 
     if (start === finish) {
       const column = state.columns[source.droppableId]
-      const newTasksIds = Array.from(column.taskIds)
+      const newTasksIds = Array.from(column.ids)
       newTasksIds.splice(source.index, 1)
       newTasksIds.splice(destination.index, 0, draggableId)
 
       const newColumn = {
         ...start,
-        taskIds: newTasksIds
+        ids: newTasksIds
       }
 
       const newState = {
@@ -158,18 +226,18 @@ export default () => {
       return
     }
 
-    const startTaskId = Array.from(start.taskIds)
+    const startTaskId = Array.from(start.ids)
     startTaskId.splice(source.index, 1)
     const newStart = {
       ...start,
-      taskIds: startTaskId
+      ids: startTaskId
     }
 
-    const finishTaskIds = Array.from(finish.taskIds)
+    const finishTaskIds = Array.from(finish.ids)
     finishTaskIds.splice(destination.index, 0, draggableId)
     const newFinish = {
       ...finish,
-      taskIds: finishTaskIds
+      ids: finishTaskIds
     }
 
     const newState = {
@@ -182,6 +250,59 @@ export default () => {
     }
 
     setState(newState)
+
+    /*
+    const start = state.columns[source.droppableId]
+    const finish = state.columns[destination.droppableId]
+  
+    if (start === finish) {
+      const column = state.columns[source.droppableId]
+      const newTasksIds = Array.from(column.taskIds)
+      newTasksIds.splice(source.index, 1)
+      newTasksIds.splice(destination.index, 0, draggableId)
+  
+      const newColumn = {
+        ...start,
+        taskIds: newTasksIds
+      }
+  
+      const newState = {
+        ...state,
+        columns: {
+          ...state.columns,
+          [newColumn.id]: newColumn
+        }
+      }
+  
+      setState(newState)
+      return
+    }
+  
+    const startTaskId = Array.from(start.taskIds)
+    startTaskId.splice(source.index, 1)
+    const newStart = {
+      ...start,
+      taskIds: startTaskId
+    }
+  
+    const finishTaskIds = Array.from(finish.taskIds)
+    finishTaskIds.splice(destination.index, 0, draggableId)
+    const newFinish = {
+      ...finish,
+      taskIds: finishTaskIds
+    }
+  
+    const newState = {
+      ...state,
+      columns: {
+        ...state.columns,
+        [newStart.id]: newStart,
+        [newFinish.id]: newFinish
+      }
+    }
+  
+    setState(newState)
+  */
   }
 
   const handleSubmit = async yid => {
@@ -193,14 +314,15 @@ export default () => {
       .collection('videos')
       .where('yid', '==', yid)
       .where('gid', '==', gid)
+      .limit(1)
       .get()
 
     const batch = firestore.batch()
     const r0 = firestore.collection('videos').doc()
     const r1 = query.empty ? r0 : query.docs[0].ref
-    batch.set(r1, { yid, gid })
+    batch.set(r1, { yid, gid }, { merge: true })
     const r2 = firestore.collection('v1').doc()
-    batch.set(r2, { gid, vid: r1, '#': state.items.length })
+    batch.set(r2, { gid, vid: r1, '#': 0 })
     return batch.commit()
   }
 
@@ -213,6 +335,30 @@ export default () => {
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Grid container spacing={8}>
+        <Grid item xs>
+          <Paper>
+            <DroppableList
+              key={state.columns['column-1'].id}
+              column={state.columns['column-1']}
+              items={state.columns['column-1'].ids.map(
+                id => state.videos[id]
+              )}
+            />
+          </Paper>
+        </Grid>
+        <Grid item xs>
+          <Paper>
+            <DroppableList
+              key={state.columns['column-2'].id}
+              column={state.columns['column-2']}
+              items={state.columns['column-2'].ids.map(
+                id => state.videos[id]
+              )}
+            />
+          </Paper>
+        </Grid>
+
+        {/*
         <Grid item xs>
           <Paper>
             <DroppableList
@@ -235,6 +381,7 @@ export default () => {
             />
           </Paper>
         </Grid>
+      */}
       </Grid>
 
       <AddDialog

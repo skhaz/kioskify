@@ -29,8 +29,8 @@ export default ({ item, index }) => {
         >
           <ListItem button>
             <ListItemText
-              primary={item.primary}
-              secondary={item.secondary}
+              primary={item.title}
+              secondary={item.duriationInSec}
             />
           </ListItem>
         </div>
