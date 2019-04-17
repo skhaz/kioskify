@@ -43,6 +43,7 @@ export default sortableElement((props) => {
 
   return (
     <ListItem
+      style={{ backgroundColor: 'white' }}
       selected={selected}
       onClick={handleClick}
     >

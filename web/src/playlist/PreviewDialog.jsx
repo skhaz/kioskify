@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import withMobileDialog from '@material-ui/core/withMobileDialog'
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
@@ -10,11 +10,17 @@ const VideoPreview = (props) => {
 
   const { fullScreen, open, onClose, url, title } = props
 
+  const [controls, setControls] = useState(false)
+
+  const handleClose = () => {
+    setControls(false) || onClose()
+  }
+
   return (
     <Dialog
       fullScreen={fullScreen}
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
     >
       {open && (
         <>
@@ -22,13 +28,15 @@ const VideoPreview = (props) => {
             {title}
           </DialogTitle>
           <ReactPlayer
+            onClick={() => setControls(true)}
             playing
             muted
+            controls={controls}
             width='100%'
             url={url}
           />
           <DialogActions>
-            <Button onClick={onClose} color="primary">
+            <Button onClick={handleClose} color="primary">
               Close
             </Button>
           </DialogActions>

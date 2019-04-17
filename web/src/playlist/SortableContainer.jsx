@@ -8,7 +8,8 @@ const useStyles = makeStyles({
   list: {
     overflowY: 'auto',
     overflowX: 'hidden',
-    height: 'calc(100vh - 96pt)'
+    height: 'calc(100vh - 96pt)',
+    backgroundColor: '#f8f8f8'
   }
 })
 
