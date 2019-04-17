@@ -31,7 +31,7 @@ export default sortableElement((props) => {
   const handleSnapshot = doc => {
     const { title, yid, ready, error } = doc.data()
 
-    const thumbnail = `https://i.ytimg.com/vi/${yid}/mqdefault.jpg`
+    const thumbnail = `<img src="https://i.ytimg.com/vi/${yid}/mqdefault.jpg" />`
 
     const status = error ? 'error' : ready ? 'done' : 'processing'
 
@@ -55,6 +55,7 @@ export default sortableElement((props) => {
 
   return (
     <ListItem
+      rightIconButton={state.thumbnail}
       selected={selected}
       onClick={handleClick}
     >
