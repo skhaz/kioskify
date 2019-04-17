@@ -15,6 +15,10 @@ import SortableContainer from './SortableContainer'
 const firestore = firebase.firestore()
 
 const useStyles = makeStyles(theme => ({
+  paper: {
+    flexGrow: 1
+  },
+
   fab: {
     position: 'absolute',
     bottom: theme.spacing.unit * 2,
@@ -70,24 +74,8 @@ export default () => {
     setItems(arrayMove(items, oldIndex, newIndex))
   }
 
-  const handlePublish = () => {
-    onPublish()
-  }
-
-  const handleClick = () => {
-    setVisible(true)
-  }
-
-  const handleClose = () => {
-    setVisible(false)
-  }
-
   const handleSubmit = async (yid) => {
-    const group = 'Z0pKmfYxMLw6RD7RMfN4'
-
-    const gid = firestore
-      .collection('groups')
-      .doc(group)
+    const gid = firestore.doc('groups/Z0pKmfYxMLw6RD7RMfN4')
 
     const query = await firestore
       .collection('videos')
@@ -105,20 +93,18 @@ export default () => {
   }
 
   return (
-    <Paper>
+    <Paper className={classes.paper}>
       <SortableContainer
         items={items}
         onSortEnd={handleSortEnd}
         distance={2}
         lockAxis='y'
       />
-
       <AddDialog
         open={visible}
-        onSubmit={(value) => { handleClose() || handleSubmit(value) }}
-        onClose={handleClose}
+        onSubmit={(value) => { setVisible(false) || handleSubmit(value) }}
+        onClose={() => setVisible(false)}
       />
-
       <Fab
         color='secondary'
         className={classes.fab}

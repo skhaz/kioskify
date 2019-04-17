@@ -7,15 +7,15 @@ import { sortableContainer } from "react-sortable-hoc"
 
 import SortableElement from "./SortableElement"
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles({
   list: {
-    overflowY: 'scroll',
+    overflowY: 'auto',
     overflowX: 'hidden',
-    height: 'calc(100vh - 96pt)',
-  },
-}))
+    height: 'calc(100vh - 96pt)'
+  }
+})
 
-const SortableList = ({ items, onClick }) => {
+export default sortableContainer(({ items, onClick }) => {
 
   const [selected, setSelected] = useState()
 
@@ -38,6 +38,4 @@ const SortableList = ({ items, onClick }) => {
       ))}
     </List>
   )
-}
-
-export default sortableContainer(SortableList)
+})

@@ -18,16 +18,14 @@ import MenuIcon from '@material-ui/icons/Menu'
 import PlaylistEditor from './playlist/PlaylistEditor'
 
 const useStyles = makeStyles({
-  root: {
-    flexGrow: 1,
-  },
   grow: {
     flexGrow: 1,
   },
-  menuButton: {
+
+  menu: {
     marginLeft: -12,
-    marginRight: 20,
-  },
+    marginRight: 20
+  }
 })
 
 const App = () => {
@@ -50,7 +48,7 @@ const App = () => {
     <>
       <AppBar position='static'>
         <Toolbar>
-          <IconButton className={classes.menuButton} color='inherit' aria-label='Menu'>
+          <IconButton className={classes.menu} color='inherit' aria-label='Menu'>
             <MenuIcon />
           </IconButton>
           <Typography variant='h6' color='inherit' className={classes.grow}>
