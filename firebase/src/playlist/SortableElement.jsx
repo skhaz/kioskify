@@ -65,7 +65,7 @@ export default sortableElement((props) => {
 
     const status = stringify(error, ready, title, durationInSec)
 
-    setState({ status, ready, title, loading: false })
+    setState({ status, ready, title })
   }
 
   useEffect(() => {
@@ -87,13 +87,13 @@ export default sortableElement((props) => {
 
   return (
     <ListItem
-      disabled={state.loading}
+      disabled={!state.ready}
       classes={classes}
       selected={selected}
       onClick={handleClick}
     >
       <ListItemText
-        primary={state.title || 'loading...'}
+        primary={state.title || ''}
         secondary={state.status}
       />
     </ListItem>
