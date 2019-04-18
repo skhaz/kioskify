@@ -20,9 +20,6 @@ export default sortableContainer(({ items, onClick }) => {
   const classes = useStyles()
 
   const handleClick = item => {
-    console.log('>>> selected', selected)
-    console.log('>>> item', item)
-
     setSelected(item) || (onClick && onClick(item))
   }
 
@@ -31,7 +28,7 @@ export default sortableContainer(({ items, onClick }) => {
       disablePadding
       className={classes.list}
     >
-      {items && items.map((item, index) => (
+      {items.map((item, index) => (
         <SortableElement
           index={index}
           value={item}

@@ -29,20 +29,38 @@ export default sortableElement((props) => {
 
   const { value, selected, onClick } = props
 
-  const [state, setState] = useState({})
+  const [state, setState] = useState({ loading: true })
 
   const classes = useStyles()
 
-  const handleSnapshot = document => {
+  const stringify = (error, ready, title) => {
+    if (error) {
+      return 'error'
+    } else if (ready) {
+      return 'done'
+    } else if (title) {
+      return 'processing'
+    } else {
+      return 'loading'
+    }
+  }
+
+  const onSnapshot = (snapshot) => {
+    if (!snapshot.exists) {
+      return
+    }
+
+    const document = snapshot.data()
+
     if (!document) {
       return
     }
 
-    const { title, ready, error } = document.data()
+    const { error, ready, title } = document
 
-    const status = error ? 'error' : ready ? 'done' : 'processing'
+    const status = stringify(error, ready, title)
 
-    setState({ title, status })
+    setState({ status, ready, title, loading: false })
   }
 
   useEffect(() => {
@@ -51,7 +69,7 @@ export default sortableElement((props) => {
     const unsubscribe = firestore
       .collection('videos')
       .doc(id)
-      .onSnapshot(handleSnapshot)
+      .onSnapshot(onSnapshot)
 
     return () => {
       unsubscribe()
@@ -64,16 +82,15 @@ export default sortableElement((props) => {
 
   return (
     <ListItem
+      disabled={state.loading}
       classes={classes}
       selected={selected}
       onClick={handleClick}
     >
-      {state.status && (
-        <ListItemText
-          primary={state.title || '...'}
-          secondary={state.status}
-        />
-      )}
+      <ListItemText
+        primary={state.title || 'loading...'}
+        secondary={state.status}
+      />
     </ListItem>
   )
 })
