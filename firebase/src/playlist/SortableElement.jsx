@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/styles'
 import { sortableElement } from 'react-sortable-hoc'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
+
 import firebase from '../helpers/firebase'
 
 const firestore = firebase.firestore()
@@ -35,7 +36,7 @@ export default sortableElement((props) => {
 
   const stringify = (error, ready, title, durationInSec) => {
     if (error) {
-      return 'error'
+      return '⚠︎'
     } else if (ready) {
       const date = new Date(durationInSec * 1000)
       const mins = date.getUTCMinutes()
@@ -44,9 +45,7 @@ export default sortableElement((props) => {
       const seconds = secs < 10 ? '0' + secs : secs
       return [minutes, seconds].join(':')
     } else if (title) {
-      return 'processing'
-    } else {
-      return 'loading'
+      return '...'
     }
   }
 

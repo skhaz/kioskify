@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">rkioskd</string>
+    <string name="allowed_characters">abcdefghijklmnopqrstuvwxyz</string>
+</resources>
