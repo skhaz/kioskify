@@ -20,12 +20,14 @@ export default sortableContainer(({ items, onClick }) => {
   const classes = useStyles()
 
   const handleClick = item => {
+    console.log('>>> selected', selected)
+    console.log('>>> item', item)
+
     setSelected(item) || (onClick && onClick(item))
   }
 
   return (
     <List
-      dense
       disablePadding
       className={classes.list}
     >

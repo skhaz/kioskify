@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { makeStyles } from '@material-ui/styles'
 import { sortableElement } from 'react-sortable-hoc'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
@@ -6,11 +7,31 @@ import firebase from '../helpers/firebase'
 
 const firestore = firebase.firestore()
 
+const useStyles = makeStyles({
+  root: {
+    cursor: 'default',
+
+    backgroundColor: 'white',
+
+    '&:hover': {
+      backgroundColor: 'lightgrey !important'
+    },
+
+    '&$selected': {
+      backgroundColor: 'lightgrey'
+    }
+  },
+
+  selected: {}
+})
+
 export default sortableElement((props) => {
 
   const { value, selected, onClick } = props
 
   const [state, setState] = useState({})
+
+  const classes = useStyles()
 
   const handleSnapshot = document => {
     if (!document) {
@@ -43,7 +64,7 @@ export default sortableElement((props) => {
 
   return (
     <ListItem
-      style={{ backgroundColor: 'white' }}
+      classes={classes}
       selected={selected}
       onClick={handleClick}
     >
