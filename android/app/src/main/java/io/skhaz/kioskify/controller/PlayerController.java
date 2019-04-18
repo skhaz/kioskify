@@ -1,10 +1,13 @@
-package io.skhaz.rkioskd.controller;
+package io.skhaz.kioskify.controller;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.webkit.URLUtil;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -42,12 +45,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import io.skhaz.rkioskd.application.Application;
-import io.skhaz.rkioskd.helper.DownloadTracker;
-import io.skhaz.rkioskd.model.Entry;
-import io.skhaz.rkioskd.model.Video;
+import io.skhaz.kioskify.application.Application;
+import io.skhaz.kioskify.helper.DownloadTracker;
+import io.skhaz.kioskify.model.Entry;
+import io.skhaz.kioskify.model.Video;
 
 public class PlayerController {
 

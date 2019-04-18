@@ -11,7 +11,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "io.skhaz.rkioskd"
+        applicationId 'io.skhaz.kioskify'
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
@@ -45,7 +45,7 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.9.6'
     implementation 'com.google.firebase:firebase-core:16.0.8'
     implementation 'com.google.firebase:firebase-firestore:18.2.0'
-    implementation 'com.google.firebase:firebase-messaging:17.5.0'
+    implementation 'com.google.firebase:firebase-messaging:17.6.0'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
 }
 

@@ -1,7 +1,8 @@
-package io.skhaz.rkioskd.application;
+package io.skhaz.kioskify.application;
 
 import android.content.Context;
-import android.os.StrictMode;
+
+import androidx.multidex.MultiDex;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.exoplayer2.offline.DownloadManager;
@@ -22,11 +23,10 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.File;
 
-import androidx.multidex.MultiDex;
 import io.fabric.sdk.android.Fabric;
-import io.skhaz.rkioskd.BuildConfig;
-import io.skhaz.rkioskd.R;
-import io.skhaz.rkioskd.helper.DownloadTracker;
+import io.skhaz.kioskify.BuildConfig;
+import io.skhaz.kioskify.R;
+import io.skhaz.kioskify.helper.DownloadTracker;
 
 public class Application extends android.app.Application {
 

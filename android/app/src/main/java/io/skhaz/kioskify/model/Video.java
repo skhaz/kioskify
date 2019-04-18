@@ -1,4 +1,4 @@
-package io.skhaz.rkioskd.model;
+package io.skhaz.kioskify.model;
 
 public class Video extends BaseModel {
 

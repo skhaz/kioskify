@@ -1,10 +1,10 @@
-package io.skhaz.rkioskd.receiver;
+package io.skhaz.kioskify.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import io.skhaz.rkioskd.service.WakeUpService;
+import io.skhaz.kioskify.service.WakeUpService;
 
 public class BootReceiver extends BroadcastReceiver {
 

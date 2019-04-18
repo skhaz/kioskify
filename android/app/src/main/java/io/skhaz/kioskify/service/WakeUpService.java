@@ -1,4 +1,4 @@
-package io.skhaz.rkioskd.service;
+package io.skhaz.kioskify.service;
 
 import android.content.Context;
 import android.content.Intent;

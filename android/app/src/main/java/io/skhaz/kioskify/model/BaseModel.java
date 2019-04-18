@@ -1,10 +1,10 @@
-package io.skhaz.rkioskd.model;
-
-import com.google.firebase.firestore.Exclude;
-import com.google.firebase.firestore.IgnoreExtraProperties;
+package io.skhaz.kioskify.model;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.google.firebase.firestore.Exclude;
+import com.google.firebase.firestore.IgnoreExtraProperties;
 
 @IgnoreExtraProperties
 public class BaseModel implements Comparable<BaseModel> {

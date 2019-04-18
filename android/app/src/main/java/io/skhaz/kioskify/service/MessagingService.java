@@ -1,12 +1,12 @@
-package io.skhaz.rkioskd.service;
+package io.skhaz.kioskify.service;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
 
-import io.skhaz.rkioskd.application.Application;
-import io.skhaz.rkioskd.helper.DownloadTracker;
+import io.skhaz.kioskify.application.Application;
+import io.skhaz.kioskify.helper.DownloadTracker;
 
 public class MessagingService extends FirebaseMessagingService {
 

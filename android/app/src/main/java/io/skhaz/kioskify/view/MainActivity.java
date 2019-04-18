@@ -1,8 +1,6 @@
-package io.skhaz.rkioskd.view;
+package io.skhaz.kioskify.view;
 
 import android.app.Activity;
-import android.app.ActivityManager;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -12,12 +10,11 @@ import android.widget.TextView;
 
 import com.google.android.exoplayer2.PlaybackPreparer;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.util.Log;
 
 import java.util.Random;
 
-import io.skhaz.rkioskd.R;
-import io.skhaz.rkioskd.controller.PlayerController;
+import io.skhaz.kioskify.R;
+import io.skhaz.kioskify.controller.PlayerController;
 
 public class MainActivity extends Activity implements PlaybackPreparer {
 

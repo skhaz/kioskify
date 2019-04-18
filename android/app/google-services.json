@@ -1,52 +1,45 @@
 {
   "project_info": {
-    "project_number": "269938000853",
-    "firebase_url": "https://rkioskd.firebaseio.com",
-    "project_id": "rkioskd",
-    "storage_bucket": "rkioskd.appspot.com"
+    "project_number": "240347289134",
+    "firebase_url": "https://kioskify.firebaseio.com",
+    "project_id": "kioskify",
+    "storage_bucket": "kioskify.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:269938000853:android:2fb20601341abd26",
+        "mobilesdk_app_id": "1:240347289134:android:2d2e62ca74fdd478",
         "android_client_info": {
-          "package_name": "io.skhaz.rkioskd"
+          "package_name": "io.skhaz.kioskify"
         }
       },
       "oauth_client": [
         {
-          "client_id": "269938000853-um8e2vj5clsr3om0h7lqcms030pkg3q8.apps.googleusercontent.com",
+          "client_id": "240347289134-dfctg3qrqpi1n1gskrm0nbs8aov63vdo.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "io.skhaz.rkioskd",
+            "package_name": "io.skhaz.kioskify",
             "certificate_hash": "1491be2c29c62e6100b0138d4dcb54552db78ee4"
           }
         },
         {
-          "client_id": "269938000853-n6gcoqnp4j7oq1fmu9mictfv89avr3fn.apps.googleusercontent.com",
+          "client_id": "240347289134-3veo5fep4roanmhmpqvvlnc9ea360ink.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAUV8tPJcKtYyIKm-47PFiDjgMpfFfY-9U"
+          "current_key": "AIzaSyDNhRdJMndpd_Ev1y3XSb8lYN_nUQK1gE8"
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "269938000853-n6gcoqnp4j7oq1fmu9mictfv89avr3fn.apps.googleusercontent.com",
+              "client_id": "240347289134-3veo5fep4roanmhmpqvvlnc9ea360ink.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     }

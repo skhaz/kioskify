@@ -1,4 +1,4 @@
-package io.skhaz.rkioskd.model;
+package io.skhaz.kioskify.model;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.PropertyName;

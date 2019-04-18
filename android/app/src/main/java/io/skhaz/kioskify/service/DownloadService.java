@@ -1,4 +1,4 @@
-package io.skhaz.rkioskd.service;
+package io.skhaz.kioskify.service;
 
 import android.app.Notification;
 
@@ -9,8 +9,8 @@ import com.google.android.exoplayer2.ui.DownloadNotificationUtil;
 import com.google.android.exoplayer2.util.NotificationUtil;
 import com.google.android.exoplayer2.util.Util;
 
-import io.skhaz.rkioskd.R;
-import io.skhaz.rkioskd.application.Application;
+import io.skhaz.kioskify.R;
+import io.skhaz.kioskify.application.Application;
 
 public class DownloadService extends com.google.android.exoplayer2.offline.DownloadService {
 

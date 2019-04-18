@@ -1,4 +1,4 @@
-package io.skhaz.rkioskd.helper;
+package io.skhaz.kioskify.helper;
 
 import android.content.Context;
 import android.net.Uri;
@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import io.skhaz.rkioskd.service.DownloadService;
+import io.skhaz.kioskify.service.DownloadService;
 
 public class DownloadTracker implements DownloadManager.Listener {
 
