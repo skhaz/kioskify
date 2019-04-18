@@ -12,6 +12,11 @@ const storage = admin.storage();
 const settings = functions.config().self;
 const pubsub = new PubSub();
 
+exports.f0 = functions.auth
+  .user()
+  .onCreate((user) => {
+    const { email, displayName } = user;
+  })
 
 exports.f1 = functions.firestore
   .document('videos/{vid}')

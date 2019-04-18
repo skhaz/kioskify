@@ -93,7 +93,7 @@ export default sortableElement((props) => {
     >
       <ListItemText
         primary={state.title || ''}
-        secondary={state.status}
+        secondary={state.status || ''}
       />
     </ListItem>
   )

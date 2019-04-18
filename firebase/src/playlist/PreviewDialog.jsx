@@ -4,7 +4,7 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogActions from '@material-ui/core/DialogActions'
 import Button from '@material-ui/core/Button'
-import ReactPlayer from 'react-player'
+import FilePlayer from 'react-player'
 
 const VideoPreview = (props) => {
 
@@ -27,7 +27,7 @@ const VideoPreview = (props) => {
           <DialogTitle>
             {title}
           </DialogTitle>
-          <ReactPlayer
+          <FilePlayer
             onClick={() => setControls(true)}
             playing
             muted
