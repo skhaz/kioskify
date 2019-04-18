@@ -56,7 +56,21 @@ export default sortableElement((props) => {
       return
     }
 
-    const { error, ready, title } = document
+    const { error, ready, title, durationInSec } = document
+
+    const date = new Date(durationInSec * 1000)
+    let minutes = date.getUTCMinutes()
+    let seconds = date.getSeconds()
+
+    if (minutes < 10) {
+      minutes = '0' + minutes
+    }
+
+    if (seconds < 10) {
+      seconds = '0' + seconds
+    }
+
+    const duration = `${minutes}:${seconds}`
 
     const status = stringify(error, ready, title)
 

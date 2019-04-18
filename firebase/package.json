@@ -20,7 +20,7 @@
     "clean": "rm -rf .firebase build",
     "start": "react-scripts start",
     "build": "yarn clean && react-scripts build",
-    "deploy": "yarn build && firebase deploy --only hosting"
+    "deploy": "yarn build && firebase deploy"
   },
   "eslintConfig": {
     "extends": "react-app"
