@@ -33,11 +33,16 @@ export default sortableElement((props) => {
 
   const classes = useStyles()
 
-  const stringify = (error, ready, title) => {
+  const stringify = (error, ready, title, durationInSec) => {
     if (error) {
       return 'error'
     } else if (ready) {
-      return 'done'
+      const date = new Date(durationInSec * 1000)
+      const mins = date.getUTCMinutes()
+      const secs = date.getSeconds()
+      const minutes = mins < 10 ? '0' + mins : mins
+      const seconds = secs < 10 ? '0' + secs : secs
+      return [minutes, seconds].join(':')
     } else if (title) {
       return 'processing'
     } else {
@@ -58,21 +63,7 @@ export default sortableElement((props) => {
 
     const { error, ready, title, durationInSec } = document
 
-    const date = new Date(durationInSec * 1000)
-    let minutes = date.getUTCMinutes()
-    let seconds = date.getSeconds()
-
-    if (minutes < 10) {
-      minutes = '0' + minutes
-    }
-
-    if (seconds < 10) {
-      seconds = '0' + seconds
-    }
-
-    const duration = `${minutes}:${seconds}`
-
-    const status = stringify(error, ready, title)
+    const status = stringify(error, ready, title, durationInSec)
 
     setState({ status, ready, title, loading: false })
   }
