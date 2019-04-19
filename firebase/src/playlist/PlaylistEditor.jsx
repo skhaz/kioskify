@@ -91,17 +91,19 @@ export default () => {
   }
 
   const handleSubmit = async (yid) => {
-    const gid = firestore.doc('groups/Z0pKmfYxMLw6RD7RMfN4')
+    const gid = firestore.doc('groups/y0mFxOO9CSGzHHiMypPs')
 
     const query = await firestore
       .collection('videos')
       .where('yid', '==', yid)
       .get()
 
+    const added = new Date()
+    const title = `https://www.youtube.com/watch?v=${yid}`
     const batch = firestore.batch()
     const newRef = firestore.collection('videos').doc()
     const docRef = query.empty ? newRef : query.docs[0].ref
-    batch.set(docRef, { yid, gid }, { merge: true })
+    batch.set(docRef, { added, yid, gid, title }, { merge: true })
     const v1Ref = firestore.collection('v1').doc()
     batch.set(v1Ref, { gid, vid: docRef, '#': items.length })
     return batch.commit()

@@ -150,7 +150,7 @@ public class PlayerController {
         unsubscribe =
                 firestore.collection("v1")
                         .whereEqualTo("gid", firestore.collection("groups")
-                                .document("Z0pKmfYxMLw6RD7RMfN4"))
+                                .document("y0mFxOO9CSGzHHiMypPs"))
                         .addSnapshotListener(onSnapshot);
     }
 

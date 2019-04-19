@@ -67,6 +67,7 @@ export default sortableElement((props) => {
     setState({ status, ready, title })
   }
 
+  // https://dev.to/bmcmahen/using-firebase-with-react-hooks-21ap
   useEffect(() => {
     const { vid: id } = value
 
