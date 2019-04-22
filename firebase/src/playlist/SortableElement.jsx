@@ -30,7 +30,9 @@ export default sortableElement((props) => {
 
   const { value, selected, onClick } = props
 
-  const [state, setState] = useState({ loading: true })
+  const [holder, setHolder] = useState({})
+
+  const [loading, setLoading] = useState(true)
 
   const classes = useStyles()
 
@@ -64,10 +66,10 @@ export default sortableElement((props) => {
 
     const status = stringify(error, ready, title, durationInSec)
 
-    setState({ status, ready, title })
+    setLoading(false)
+    setHolder({ status, ready, title })
   }
 
-  // https://dev.to/bmcmahen/using-firebase-with-react-hooks-21ap
   useEffect(() => {
     const { vid: id } = value
 
@@ -76,9 +78,7 @@ export default sortableElement((props) => {
       .doc(id)
       .onSnapshot(onSnapshot)
 
-    return () => {
-      unsubscribe()
-    }
+    return () => unsubscribe()
   }, [])
 
   const handleClick = () => {
@@ -87,15 +87,16 @@ export default sortableElement((props) => {
 
   return (
     <ListItem
-      disabled={!state.ready}
+      disabled={!holder.ready}
       classes={classes}
       selected={selected}
       onClick={handleClick}
+      style={{ display: loading ? 'none' : '' }}
     >
       <ListItemText
-        primary={state.title || ''}
-        secondary={state.status || ''}
+        primary={holder.title || ''}
+        secondary={holder.status}
       />
-    </ListItem>
+    </ListItem >
   )
 })

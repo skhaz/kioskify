@@ -66,9 +66,7 @@ export default () => {
       .orderBy('#')
       .onSnapshot(onCompletion)
 
-    return () => {
-      unsubscribe()
-    }
+    return () => unsubscribe()
   }, [])
 
   const handleSortEnd = ({ oldIndex, newIndex }) => {

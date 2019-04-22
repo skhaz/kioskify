@@ -65,7 +65,7 @@ const App = () => {
           <LinkTab label='playlist' href='#' />
         </Tabs>
       </AppBar>
-      {index === 0 && <TabContainer></TabContainer>}
+      {index === 0 && <TabContainer ></TabContainer>}
       {index === 1 && <TabContainer><MachineManager /></TabContainer>}
       {index === 2 && <TabContainer><PlaylistEditor /></TabContainer>}
     </>
