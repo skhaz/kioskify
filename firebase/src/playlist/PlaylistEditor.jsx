@@ -94,6 +94,7 @@ export default () => {
     const query = await firestore
       .collection('videos')
       .where('yid', '==', yid)
+      .limit(1)
       .get()
 
     const added = new Date()

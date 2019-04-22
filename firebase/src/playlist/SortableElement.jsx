@@ -51,7 +51,7 @@ export default sortableElement((props) => {
     }
   }
 
-  const onSnapshot = (snapshot) => {
+  const handleSnapshot = (snapshot) => {
     if (!snapshot.exists) {
       return
     }
@@ -76,7 +76,7 @@ export default sortableElement((props) => {
     const unsubscribe = firestore
       .collection('videos')
       .doc(id)
-      .onSnapshot(onSnapshot)
+      .onSnapshot(handleSnapshot)
 
     return () => unsubscribe()
   }, [])
