@@ -54,7 +54,6 @@ const useMachines = () => {
       )
 
     return () => unsubscribe()
-
   }, [])
 
   return [

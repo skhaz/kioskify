@@ -105,7 +105,7 @@ exports.f3 = functions.storage
       .then(docs => {
         const batch = firestore.batch();
         docs.forEach(doc =>
-          batch.update(doc.ref, { enabled: true }));
+          batch.set(doc.ref, { enabled: true }, { merge: true }));
         return batch.commit();
       });
 
