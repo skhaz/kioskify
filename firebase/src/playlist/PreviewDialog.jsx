@@ -8,7 +8,7 @@ import FilePlayer from 'react-player'
 
 const VideoPreview = (props) => {
 
-  const { fullScreen, open, onClose, url, title } = props
+  const { fullScreen, open, onClose, onDelete, url, title } = props
 
   const [controls, setControls] = useState(false)
 
@@ -36,8 +36,11 @@ const VideoPreview = (props) => {
             url={url}
           />
           <DialogActions>
+            <Button onClick={() => { handleClose() || (onDelete && onDelete()) }} color="primary">
+              Delete
+            </Button>
             <Button onClick={handleClose} color="primary">
-              Close
+              Ok
             </Button>
           </DialogActions>
         </>

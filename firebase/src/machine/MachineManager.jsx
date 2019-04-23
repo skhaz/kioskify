@@ -84,23 +84,9 @@ export default () => {
       return
     }
 
-    const userRef = 
-    const owner = 'me'
+    const { uid } = firebase.auth().currentUser
     const added = new Date()
-
-    return firestore.doc(`machines/${query.docs[0].id}`).set({ owner, added })
-    /*
-    firestore.
-
-    const title = `https://www.youtube.com/watch?v=${yid}`
-    const batch = firestore.batch()
-    const newRef = firestore.collection('videos').doc()
-    const docRef = query.empty ? newRef : query.docs[0].ref
-    batch.set(docRef, { added, yid, gid, title }, { merge: true })
-    const v1Ref = firestore.collection('v1').doc()
-    batch.set(v1Ref, { gid, vid: docRef, '#': items.length })
-    return batch.commit()
-    */
+    return firestore.doc(`machines/${query.docs[0].id}`).set({ owner: uid, added })
   }
 
   return (
@@ -111,7 +97,10 @@ export default () => {
       >
         {!loading && machines.map(machine => (
           <ListItem button key={machine.id}>
-            <ListItemText primary={'ij'} secondary={''} />
+            <ListItemText
+              primary={machine.name || 'Untitled'}
+              secondary={machine.location || 'Unknow location'}
+            />
           </ListItem>
         ))}
       </List>

@@ -28,6 +28,8 @@ export default () => {
 
   const [items, setItems] = useState([])
 
+  const [videos, setVideos] = useState([])
+
   const [visible, setVisible] = useState(false)
 
   const [preview, setPreview] = useState({ open: false })
@@ -37,10 +39,10 @@ export default () => {
   const onCompletion = querySnapshot => {
     const arr = []
 
-    querySnapshot.forEach(doc => {
-      const { vid: { id: vid }, '#': index } = doc.data()
+    querySnapshot.forEach(document => {
+      const { vid: { id: vid }, '#': index } = document.data()
 
-      const { id } = doc
+      const { id } = document
 
       arr.push({ id, vid, index })
     })
@@ -48,7 +50,7 @@ export default () => {
     setItems(arr)
   }
 
-  const onPublish = debounce(300, async () => {
+  const publish = async () => {
     const batch = firestore.batch()
 
     items.forEach(({ id }, index) => {
@@ -57,8 +59,10 @@ export default () => {
       )
     })
 
-    return batch.commit()
-  })
+    await batch.commit()
+  }
+
+  useEffect(() => { publish() }, [items])
 
   useEffect(() => {
     const unsubscribe = firestore
@@ -69,14 +73,31 @@ export default () => {
     return () => unsubscribe()
   }, [])
 
+
+  useEffect(() => {
+    const unsubscribe = firestore
+      .collection('videos')
+      .onSnapshot(snapshot => {
+        const videos = []
+
+        snapshot.forEach(doc => {
+          videos.push({ id: doc.id, ...doc.data() })
+        })
+
+        setVideos(videos)
+      })
+
+    return () => unsubscribe()
+  }, [])
+
   const handleSortEnd = ({ oldIndex, newIndex }) => {
     setItems(arrayMove(items, oldIndex, newIndex))
   }
 
-  const handleClick = async ({ vid: id }) => {
+  const handleClick = async ({ id, vid }) => {
     const document = await firestore
       .collection('videos')
-      .doc(id)
+      .doc(vid)
       .get()
 
     const { ready, title, url } = document.data()
@@ -85,7 +106,11 @@ export default () => {
       return
     }
 
-    setPreview({ open: true, title, url })
+    setPreview({ open: true, id, title, url })
+  }
+
+  const handleDelete = async (preview) => {
+    return firestore.doc(`v1/${preview.id}`).delete()
   }
 
   const handleSubmit = async (yid) => {
@@ -98,18 +123,20 @@ export default () => {
       .get()
 
     const added = new Date()
-    const title = `https://www.youtube.com/watch?v=${yid}`
     const batch = firestore.batch()
     const newRef = firestore.collection('videos').doc()
     const docRef = query.empty ? newRef : query.docs[0].ref
-    batch.set(docRef, { added, yid, gid, title }, { merge: true })
+    batch.set(docRef, { added, yid, gid }, { merge: true })
     const v1Ref = firestore.collection('v1').doc()
     batch.set(v1Ref, { gid, vid: docRef, '#': items.length })
     return batch.commit()
   }
 
   return (
-    <Paper className={classes.paper}>
+    <Paper
+      className={classes.paper}
+      onContextMenu={(e) => { e.preventDefault() }}
+    >
       <SortableContainer
         items={items}
         onSortEnd={handleSortEnd}
@@ -119,6 +146,7 @@ export default () => {
       />
       <AddDialog
         open={visible}
+        videos={videos}
         onSubmit={(value) => { setVisible(false) || handleSubmit(value) }}
         onClose={() => setVisible(false)}
       />
@@ -134,6 +162,7 @@ export default () => {
         url={preview.url}
         title={preview.title}
         onClose={() => setPreview({ open: false })}
+        onDelete={() => handleDelete(preview)}
       />
     </Paper>
   )

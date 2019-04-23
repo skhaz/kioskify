@@ -28,7 +28,7 @@ const useStyles = makeStyles({
 
 export default sortableElement((props) => {
 
-  const { value, selected, onClick } = props
+  const { value, selected, onClick, onRightClick } = props
 
   const [holder, setHolder] = useState({})
 
@@ -62,12 +62,12 @@ export default sortableElement((props) => {
       return
     }
 
-    const { error, ready, title, durationInSec } = document
+    const { error, ready, title, durationInSec, yid } = document
 
     const status = stringify(error, ready, title, durationInSec)
 
     setLoading(false)
-    setHolder({ status, ready, title })
+    setHolder({ status, ready, title, yid })
   }
 
   useEffect(() => {
@@ -81,20 +81,17 @@ export default sortableElement((props) => {
     return () => unsubscribe()
   }, [])
 
-  const handleClick = () => {
-    onClick(value)
-  }
-
   return (
     <ListItem
       disabled={!holder.ready}
       classes={classes}
       selected={selected}
-      onClick={handleClick}
       style={{ display: loading ? 'none' : '' }}
+      onClick={() => onClick(value)}
+      onContextMenu={(e) => { e.preventDefault() || onRightClick(e.target) }}
     >
       <ListItemText
-        primary={holder.title || ''}
+        primary={holder.title || `https://www.youtube.com/watch?v=${holder.yid}`}
         secondary={holder.status}
       />
     </ListItem >

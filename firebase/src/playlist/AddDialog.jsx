@@ -7,17 +7,24 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
 import withMobileDialog from '@material-ui/core/withMobileDialog'
+
+const BASE_URL = 'https://www.youtube.com/watch?v='
 
 const AddDialog = (props) => {
 
-  const { fullScreen, open, onClose, onSubmit } = props
+  const { fullScreen, open, videos, onClose, onSubmit } = props
 
   const [yid, setYid] = useState('')
 
   const [error, setError] = useState(false)
 
   const firstRun = useRef(true)
+
+  const inputRef = useRef(null);
 
   useEffect(() => {
     if (firstRun.current) {
@@ -51,6 +58,11 @@ const AddDialog = (props) => {
     }
   }
 
+  const handleClick = ({ yid }) => {
+    inputRef.current.value = [BASE_URL, yid].join('')
+    setYid(yid)
+  }
+
   return (
     <Dialog
       fullScreen={fullScreen}
@@ -66,15 +78,30 @@ const AddDialog = (props) => {
         <TextField
           margin='dense'
           id='name'
-          label='YouTube Address'
           type='url'
+          inputRef={inputRef}
           error={error}
-          placeholder='https://www.youtube.com/watch?v=...'
+          placeholder={`${BASE_URL}...`}
           fullWidth
           autoFocus
           onChange={handleChange}
           onKeyPress={handleKeyPress}
         />
+        <List
+          disablePadding
+        >
+          {videos.map(video => (
+            <ListItem
+              button
+              key={video.id}
+              onClick={() => { handleClick(video) }}
+            >
+              <ListItemText
+                primary={video.title || [BASE_URL, video.yid].join('')}
+              />
+            </ListItem>
+          ))}
+        </List>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color='primary'>
