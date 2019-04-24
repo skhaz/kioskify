@@ -1,6 +1,7 @@
 package io.skhaz.kioskify.view;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -13,9 +14,9 @@ import androidx.annotation.NonNull;
 
 import com.google.android.exoplayer2.PlaybackPreparer;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.util.Log;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.common.base.Strings;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Random;
@@ -39,24 +40,41 @@ public class MainActivity extends Activity implements PlaybackPreparer {
                 LayoutParams.FLAG_TURN_SCREEN_ON);
         setContentView(R.layout.main_activity);
 
-        boolean firstRun = true;
+        // boolean firstRun = true;
+        // SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+        // SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        // boolean firstRun = prefs.getBoolean("firstRun", true);
+
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        String machineId = prefs.getString("machine", null);
+        boolean firstRun = Strings.isNullOrEmpty(machineId);
 
         if (firstRun) {
             Random random = new Random();
-            StringBuilder builder = new StringBuilder();
             String allowedCharacters = getString(R.string.allowed_characters);
+            StringBuilder builder = new StringBuilder();
+
             for (int i = 0; i < 4; i++) {
-                builder.append(allowedCharacters.charAt(random.nextInt(allowedCharacters.length())));
+                builder.append(allowedCharacters.charAt(
+                        random.nextInt(allowedCharacters.length())));
             }
+
+            String secret = builder.toString().toUpperCase();
+
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("machine", id);
+            editor.apply();
+
+            // Store secret on firestore, get the Id and save on sharedPreferences
 
             TextView textView = findViewById(R.id.text_view);
             textView.setVisibility(View.VISIBLE);
-            textView.setText(builder.toString().toUpperCase());
+            textView.setText(secret);
         }
 
         playerView = findViewById(R.id.player_view);
         playerView.requestFocus();
-        playerView.setUseController(false);
+        // playerView.setUseController(false);
         playerView.setPlaybackPreparer(this);
         playerController = new PlayerController(this);
 
