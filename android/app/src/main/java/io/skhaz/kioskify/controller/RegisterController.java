@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.google.android.exoplayer2.util.Log;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.common.base.Strings;
 import com.google.firebase.firestore.DocumentReference;
@@ -26,7 +25,7 @@ import java.util.Random;
 
 import io.skhaz.kioskify.R;
 
-public class RegisterController {
+public class RegisterController implements EventListener<DocumentSnapshot> {
 
     private Context context;
 
@@ -36,6 +35,8 @@ public class RegisterController {
 
     private ListenerRegistration listener;
 
+    private TextView textView;
+
     public RegisterController(Context context) {
         this.context = context;
         firestore = FirebaseFirestore.getInstance();
@@ -43,6 +44,7 @@ public class RegisterController {
     }
 
     public void init(TextView textView) {
+        this.textView = textView;
         final String machineId = prefs.getString("machine_id", null);
         boolean firstRun = Strings.isNullOrEmpty(machineId);
 
@@ -57,14 +59,15 @@ public class RegisterController {
             }
 
             String pinCode = builder.toString().toUpperCase();
+
             Map<String, Object> document = new HashMap<>();
             document.put("pinCode", pinCode);
             document.put("Manufacture", Build.MANUFACTURER);
             document.put("Brand", Build.BRAND);
             document.put("Model", Build.MODEL);
-            document.put("Serial", Build.SERIAL);
             document.put("Fingerprint", Build.FINGERPRINT);
             document.put("added", Calendar.getInstance().getTime());
+
             firestore.collection("machines").add(document)
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
@@ -79,28 +82,8 @@ public class RegisterController {
                     });
 
         } else {
-            listener = firestore.collection("machines").document(machineId)
-                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                        @Override
-                        public void onEvent(
-                                @Nullable DocumentSnapshot documentSnapshot,
-                                @Nullable FirebaseFirestoreException exception) {
-                            if (documentSnapshot == null) {
-                                return;
-                            }
-
-                            String pinCode = documentSnapshot.getString("pinCode");
-
-                            if (Strings.isNullOrEmpty(pinCode)) {
-                                textView.setVisibility(View.GONE);
-
-                                return;
-                            }
-
-                            textView.setVisibility(View.VISIBLE);
-                            textView.setText(pinCode);
-                        }
-                    });
+            firestore.collection("machines").document(machineId)
+                    .addSnapshotListener(this);
         }
     }
 
@@ -108,5 +91,26 @@ public class RegisterController {
         if (listener != null) {
             listener.remove();
         }
+    }
+
+    @Override
+    public void onEvent(
+            @Nullable DocumentSnapshot documentSnapshot,
+            @Nullable FirebaseFirestoreException exception) {
+
+        if (documentSnapshot == null) {
+            return;
+        }
+
+        String pinCode = documentSnapshot.getString("pinCode");
+
+        if (Strings.isNullOrEmpty(pinCode)) {
+            textView.setVisibility(View.GONE);
+
+            return;
+        }
+
+        textView.setVisibility(View.VISIBLE);
+        textView.setText(pinCode);
     }
 }
