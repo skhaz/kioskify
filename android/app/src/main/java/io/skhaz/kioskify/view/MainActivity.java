@@ -1,14 +1,12 @@
 package io.skhaz.kioskify.view;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -16,19 +14,21 @@ import com.google.android.exoplayer2.PlaybackPreparer;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.common.base.Strings;
 import com.google.firebase.messaging.FirebaseMessaging;
-
-import java.util.Random;
 
 import io.skhaz.kioskify.R;
 import io.skhaz.kioskify.controller.PlayerController;
+import io.skhaz.kioskify.controller.RegisterController;
 
 public class MainActivity extends Activity implements PlaybackPreparer {
 
     private PlayerView playerView;
 
+    private TextView textView;
+
     private PlayerController playerController;
+
+    private RegisterController registerController;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,43 +40,13 @@ public class MainActivity extends Activity implements PlaybackPreparer {
                 LayoutParams.FLAG_TURN_SCREEN_ON);
         setContentView(R.layout.main_activity);
 
-        // boolean firstRun = true;
-        // SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
-        // SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-        // boolean firstRun = prefs.getBoolean("firstRun", true);
-
-        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-        String machineId = prefs.getString("machine", null);
-        boolean firstRun = Strings.isNullOrEmpty(machineId);
-
-        if (firstRun) {
-            Random random = new Random();
-            String allowedCharacters = getString(R.string.allowed_characters);
-            StringBuilder builder = new StringBuilder();
-
-            for (int i = 0; i < 4; i++) {
-                builder.append(allowedCharacters.charAt(
-                        random.nextInt(allowedCharacters.length())));
-            }
-
-            String secret = builder.toString().toUpperCase();
-
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("machine", id);
-            editor.apply();
-
-            // Store secret on firestore, get the Id and save on sharedPreferences
-
-            TextView textView = findViewById(R.id.text_view);
-            textView.setVisibility(View.VISIBLE);
-            textView.setText(secret);
-        }
-
         playerView = findViewById(R.id.player_view);
         playerView.requestFocus();
         // playerView.setUseController(false);
         playerView.setPlaybackPreparer(this);
+        textView = findViewById(R.id.text_view);
         playerController = new PlayerController(this);
+        registerController = new RegisterController(this);
 
         FirebaseMessaging.getInstance().subscribeToTopic("/topics/y0mFxOO9CSGzHHiMypPs")
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -86,9 +56,10 @@ public class MainActivity extends Activity implements PlaybackPreparer {
                         if (!task.isSuccessful()) {
                             msg = "subscribe_failed";
                         }
-                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                        // Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
+
     }
 
     @Override
@@ -96,6 +67,7 @@ public class MainActivity extends Activity implements PlaybackPreparer {
         super.onStart();
 
         playerController.init(playerView);
+        registerController.init(textView);
     }
 
     @Override
@@ -103,6 +75,7 @@ public class MainActivity extends Activity implements PlaybackPreparer {
         super.onStop();
 
         playerController.tearDown();
+        registerController.tearDown();
     }
 
     @Override

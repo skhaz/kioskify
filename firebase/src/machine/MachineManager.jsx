@@ -74,7 +74,7 @@ export default () => {
   const handleSubmit = async (value) => {
     const query = await firestore
       .collection('machines')
-      .where('secret', '==', value)
+      .where('pinCode', '==', value)
       .limit(1)
       .get()
 
