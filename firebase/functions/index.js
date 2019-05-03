@@ -16,7 +16,7 @@ exports.f0 = functions.auth
   .user()
   .onCreate((user) => {
     const { email, displayName } = user;
-  })
+  });
 
 exports.f1 = functions.firestore
   .document('videos/{vid}')

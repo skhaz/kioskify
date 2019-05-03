@@ -62,8 +62,6 @@ export default () => {
     await batch.commit()
   }
 
-  useEffect(() => { publish() }, [items])
-
   useEffect(() => {
     const unsubscribe = firestore
       .collection('v1')
@@ -91,7 +89,13 @@ export default () => {
   }, [])
 
   const handleSortEnd = ({ oldIndex, newIndex }) => {
+    if (oldIndex === newIndex) {
+      return
+    }
+
     setItems(arrayMove(items, oldIndex, newIndex))
+
+    publish()
   }
 
   const handleClick = async ({ id, vid }) => {

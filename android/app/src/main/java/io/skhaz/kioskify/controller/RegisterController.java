@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.provider.Settings.Secure;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.common.base.Strings;
@@ -48,6 +50,12 @@ public class RegisterController implements EventListener<DocumentSnapshot> {
         final String machineId = prefs.getString("machine_id", null);
         boolean firstRun = Strings.isNullOrEmpty(machineId);
 
+
+        MutableLiveData v = new MutableLiveData();
+        v.postValue("a");
+
+        move to the same player controler?
+
         if (firstRun) {
             Random random = new Random();
             String allowedCharacters = context.getString(R.string.allowed_characters);
@@ -62,10 +70,10 @@ public class RegisterController implements EventListener<DocumentSnapshot> {
 
             Map<String, Object> document = new HashMap<>();
             document.put("pinCode", pinCode);
-            document.put("Manufacture", Build.MANUFACTURER);
-            document.put("Brand", Build.BRAND);
-            document.put("Model", Build.MODEL);
-            document.put("Fingerprint", Build.FINGERPRINT);
+            document.put("manufacture", Build.MANUFACTURER);
+            document.put("brand", Build.BRAND);
+            document.put("model", Build.MODEL);
+            document.put("fingerprint", Build.FINGERPRINT);
             document.put("added", Calendar.getInstance().getTime());
 
             firestore.collection("machines").add(document)
