@@ -23,13 +23,11 @@ const useStyles = makeStyles(theme => ({
 
   cover: {
     width: 160,
-    height: 90,
   },
 
   content: {
     borderBottom: `1px solid ${theme.palette.divider}`,
     backgroundClip: 'padding-box',
-    width: '100%',
   }
 }))
 
