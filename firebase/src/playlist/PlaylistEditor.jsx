@@ -36,6 +36,18 @@ export default () => {
 
   const classes = useStyles()
 
+  const publish = async () => {
+    const batch = firestore.batch()
+
+    items.forEach(({ id }, index) => {
+      batch.update(
+        firestore.collection('v1').doc(id), { '#': index }
+      )
+    })
+
+    await batch.commit()
+  }
+
   const onCompletion = querySnapshot => {
     const arr = []
 
@@ -48,18 +60,6 @@ export default () => {
     })
 
     setItems(arr)
-  }
-
-  const publish = async () => {
-    const batch = firestore.batch()
-
-    items.forEach(({ id }, index) => {
-      batch.update(
-        firestore.collection('v1').doc(id), { '#': index }
-      )
-    })
-
-    await batch.commit()
   }
 
   useEffect(() => {
@@ -88,14 +88,14 @@ export default () => {
     return () => unsubscribe()
   }, [])
 
+  useEffect(() => { publish() }, [items])
+
   const handleSortEnd = ({ oldIndex, newIndex }) => {
     if (oldIndex === newIndex) {
       return
     }
 
     setItems(arrayMove(items, oldIndex, newIndex))
-
-    publish()
   }
 
   const handleClick = async ({ id, vid }) => {

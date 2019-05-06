@@ -37,7 +37,7 @@ exports.f1 = functions.firestore
       promises.push(pubsub.topic(settings.topic).publish(dataBuffer));
     }
 
-    promises.push(snapshot.ref.update({ title, durationInSec, error, ready: false }));
+    promises.push(snapshot.ref.update({ title, durationInSec, error }));
 
     return Promise.all(promises);
   });
