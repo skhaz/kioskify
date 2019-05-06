@@ -14,7 +14,9 @@ const firestore = firebase.firestore()
 const useStyles = makeStyles(theme => ({
   card: {
     display: 'flex',
+
     height: 90,
+
     '&:hover': {
       textDecoration: 'none',
       backgroundColor: theme.palette.action.hover,
@@ -23,11 +25,13 @@ const useStyles = makeStyles(theme => ({
 
   cover: {
     width: 160,
+    minWidth: 160,
   },
 
   content: {
     borderBottom: `1px solid ${theme.palette.divider}`,
     backgroundClip: 'padding-box',
+    flexGrow: 1
   }
 }))
 
