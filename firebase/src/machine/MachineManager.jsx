@@ -18,8 +18,8 @@ const useStyles = makeStyles(theme => ({
 
   fab: {
     position: 'absolute',
-    bottom: theme.spacing.unit * 2,
-    right: theme.spacing.unit * 2
+    bottom: theme.spacing.unit * 4,
+    right: theme.spacing.unit * 4
   },
 
   list: {

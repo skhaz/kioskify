@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/styles'
 import { sortableElement } from 'react-sortable-hoc'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
 
 import Card from '@material-ui/core/Card'
-import CardActionArea from '@material-ui/core/CardActionArea'
-import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
 import Typography from '@material-ui/core/Typography'
@@ -15,25 +11,32 @@ import firebase from '../helpers/firebase'
 
 const firestore = firebase.firestore()
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   card: {
     display: 'flex',
     height: 90,
-    borderRadius: 0
+    '&:hover': {
+      textDecoration: 'none',
+      backgroundColor: theme.palette.action.hover,
+    },
   },
 
   cover: {
     width: 160,
     height: 90,
+  },
+
+  content: {
+    borderBottom: `1px solid ${theme.palette.divider}`,
+    backgroundClip: 'padding-box',
+    width: '100%',
   }
-})
+}))
 
 export default sortableElement(props => {
   const { value, selected, onClick, onRightClick } = props
 
   const [holder, setHolder] = useState()
-
-  const [loading, setLoading] = useState(true)
 
   const classes = useStyles()
 
@@ -67,7 +70,6 @@ export default sortableElement(props => {
 
     const status = stringify(error, ready, title, durationInSec)
 
-    setLoading(false)
     setHolder({ status, ready, title, yid })
   }
 
@@ -83,17 +85,15 @@ export default sortableElement(props => {
   }, [])
 
   return (
-    <Card
-      className={classes.card}
-    >
+    <Card elevation={0} square className={classes.card}>
       {holder && (
         <>
           <CardMedia
             className={classes.cover}
             image={`https://i.ytimg.com/vi/${holder.yid}/mqdefault.jpg`}
           />
-          <CardContent selected className={classes.content}>
-            <Typography component='h5' variant='h5'>
+          <CardContent className={classes.content}>
+            <Typography component='h6' variant='h6'>
               {holder.title || `https://www.youtube.com/watch?v=${holder.yid}`}
             </Typography>
             <Typography variant='subtitle1' color='textSecondary'>
