@@ -1,32 +1,25 @@
-import React, { useState } from 'react'
-import withMobileDialog from '@material-ui/core/withMobileDialog'
-import Dialog from '@material-ui/core/Dialog'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import DialogActions from '@material-ui/core/DialogActions'
-import Button from '@material-ui/core/Button'
-import FilePlayer from 'react-player'
+import React, { useState } from 'react';
+import withMobileDialog from '@material-ui/core/withMobileDialog';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
+import Button from '@material-ui/core/Button';
+import FilePlayer from 'react-player';
 
-const VideoPreview = (props) => {
+const VideoPreview = props => {
+  const { fullScreen, open, onClose, onDelete, url, title } = props;
 
-  const { fullScreen, open, onClose, onDelete, url, title } = props
-
-  const [controls, setControls] = useState(false)
+  const [controls, setControls] = useState(false);
 
   const handleClose = () => {
-    setControls(false) || onClose()
-  }
+    setControls(false) || onClose();
+  };
 
   return (
-    <Dialog
-      fullScreen={fullScreen}
-      open={open}
-      onClose={handleClose}
-    >
+    <Dialog fullScreen={fullScreen} open={open} onClose={handleClose}>
       {open && (
         <>
-          <DialogTitle>
-            {title}
-          </DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
           <FilePlayer
             onClick={() => setControls(true)}
             playing
@@ -36,17 +29,22 @@ const VideoPreview = (props) => {
             url={url}
           />
           <DialogActions>
-            <Button onClick={() => { handleClose() || (onDelete && onDelete()) }} color="primary">
+            <Button
+              onClick={() => {
+                handleClose() || (onDelete && onDelete());
+              }}
+              color='primary'
+            >
               Delete
             </Button>
-            <Button onClick={handleClose} color="primary">
+            <Button onClick={handleClose} color='primary'>
               Ok
             </Button>
           </DialogActions>
         </>
       )}
     </Dialog>
-  )
-}
+  );
+};
 
-export default withMobileDialog()(VideoPreview)
+export default withMobileDialog()(VideoPreview);

@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react'
-import { debounce } from 'throttle-debounce'
-import arrayMove from 'array-move'
-import { makeStyles } from '@material-ui/styles'
-import Paper from '@material-ui/core/Paper'
-import AddIcon from '@material-ui/icons/Add'
-import Fab from '@material-ui/core/Fab'
-import firebase from '../helpers/firebase'
-import AddDialog from './AddDialog'
-import SortableContainer from './SortableContainer'
-import PreviewDialog from './PreviewDialog'
+import React, { useState, useEffect } from 'react';
+import { debounce } from 'throttle-debounce';
+import arrayMove from 'array-move';
+import { makeStyles } from '@material-ui/styles';
+import Paper from '@material-ui/core/Paper';
+import AddIcon from '@material-ui/icons/Add';
+import Fab from '@material-ui/core/Fab';
+import firebase from '../helpers/firebase';
+import AddDialog from './AddDialog';
+import SortableContainer from './SortableContainer';
+import PreviewDialog from './PreviewDialog';
 
-const firestore = firebase.firestore()
+const firestore = firebase.firestore();
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -22,124 +22,122 @@ const useStyles = makeStyles(theme => ({
     bottom: theme.spacing.unit * 4,
     right: theme.spacing.unit * 4
   }
-}))
+}));
 
 export default () => {
+  const [items, setItems] = useState([]);
 
-  const [items, setItems] = useState([])
+  const [videos, setVideos] = useState([]);
 
-  const [videos, setVideos] = useState([])
+  const [visible, setVisible] = useState(false);
 
-  const [visible, setVisible] = useState(false)
+  const [preview, setPreview] = useState({ open: false });
 
-  const [preview, setPreview] = useState({ open: false })
-
-  const classes = useStyles()
+  const classes = useStyles();
 
   const publish = async () => {
-    const batch = firestore.batch()
+    const batch = firestore.batch();
 
     items.forEach(({ id }, index) => {
-      batch.update(
-        firestore.collection('v1').doc(id), { '#': index }
-      )
-    })
+      batch.update(firestore.collection('v1').doc(id), { '#': index });
+    });
 
-    await batch.commit()
-  }
+    await batch.commit();
+  };
 
   const onCompletion = querySnapshot => {
-    const arr = []
+    const arr = [];
 
     querySnapshot.forEach(document => {
-      const { vid: { id: vid }, '#': index } = document.data()
+      const { vid: { id: vid }, '#': index } = document.data();
 
-      const { id } = document
+      const { id } = document;
 
-      arr.push({ id, vid, index })
-    })
+      arr.push({ id, vid, index });
+    });
 
-    setItems(arr)
-  }
+    setItems(arr);
+  };
 
   useEffect(() => {
     const unsubscribe = firestore
       .collection('v1')
       .orderBy('#')
-      .onSnapshot(onCompletion)
+      .onSnapshot(onCompletion);
 
-    return () => unsubscribe()
-  }, [])
-
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
-    const unsubscribe = firestore
-      .collection('videos')
-      .onSnapshot(snapshot => {
-        const videos = []
+    const unsubscribe = firestore.collection('videos').onSnapshot(snapshot => {
+      const videos = [];
 
-        snapshot.forEach(doc => {
-          videos.push({ id: doc.id, ...doc.data() })
-        })
+      snapshot.forEach(doc => {
+        videos.push({ id: doc.id, ...doc.data() });
+      });
 
-        setVideos(videos)
-      })
+      setVideos(videos);
+    });
 
-    return () => unsubscribe()
-  }, [])
+    return () => unsubscribe();
+  }, []);
 
-  useEffect(() => { publish() }, [items])
+  useEffect(() => { publish(); }, [items]);
 
   const handleSortEnd = ({ oldIndex, newIndex }) => {
     if (oldIndex === newIndex) {
-      return
+      return;
     }
 
-    setItems(arrayMove(items, oldIndex, newIndex))
-  }
+    setItems(arrayMove(items, oldIndex, newIndex));
+  };
 
   const handleClick = async ({ id, vid }) => {
     const document = await firestore
       .collection('videos')
       .doc(vid)
-      .get()
+      .get();
 
-    const { ready, title, url } = document.data()
+    const { ready, title, url } = document.data();
 
     if (!ready) {
-      return
+      return;
     }
 
-    setPreview({ open: true, id, title, url })
-  }
+    setPreview({ open: true, id, title, url });
+  };
 
-  const handleDelete = async (preview) => {
-    return firestore.doc(`v1/${preview.id}`).delete()
-  }
+  const handleDelete = async preview => {
+    return firestore.doc(`v1/${preview.id}`).delete();
+  };
 
-  const handleSubmit = async (yid) => {
-    const gid = firestore.doc('groups/y0mFxOO9CSGzHHiMypPs')
+  const handleSubmit = async yid => {
+    const gid = firestore.doc('groups/y0mFxOO9CSGzHHiMypPs');
 
     const query = await firestore
       .collection('videos')
       .where('yid', '==', yid)
       .limit(1)
-      .get()
+      .get();
 
-    const added = new Date()
-    const batch = firestore.batch()
-    const newRef = firestore.collection('videos').doc()
-    const docRef = query.empty ? newRef : query.docs[0].ref
-    batch.set(docRef, { added, yid, gid }, { merge: true })
-    const v1Ref = firestore.collection('v1').doc()
-    batch.set(v1Ref, { gid, vid: docRef, '#': items.length })
-    return batch.commit()
-  }
+    const added = new Date();
+    const batch = firestore.batch();
+    const newRef = firestore.collection('videos').doc();
+    const docRef = query.empty ? newRef : query.docs[0].ref;
+    batch.set(docRef, { added, yid, gid }, { merge: true });
+    const v1Ref = firestore.collection('v1').doc();
+    batch.set(v1Ref, { gid, vid: docRef, '#': items.length });
+    return batch.commit();
+  };
+
+  const handleContextMenu = event => {
+    event.preventDefault();
+  };
 
   return (
     <Paper
       className={classes.paper}
-      onContextMenu={(e) => { e.preventDefault() }}
+      onContextMenu={handleContextMenu}
     >
       <SortableContainer
         items={items}
@@ -151,7 +149,10 @@ export default () => {
       <AddDialog
         open={visible}
         videos={videos}
-        onSubmit={(value) => { setVisible(false) || handleSubmit(value) }}
+        onSubmit={value => {
+          setVisible(false);
+          handleSubmit(value);
+        }}
         onClose={() => setVisible(false)}
       />
       <Fab
@@ -169,5 +170,5 @@ export default () => {
         onDelete={() => handleDelete(preview)}
       />
     </Paper>
-  )
-}
+  );
+};
