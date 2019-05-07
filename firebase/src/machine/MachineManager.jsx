@@ -6,10 +6,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
-import firebase from '../helpers/firebase';
+import { firestore, auth } from '../helpers/firebase';
 import AddDialog from './AddDialog';
-
-const firestore = firebase.firestore();
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -77,7 +75,7 @@ export default () => {
       return;
     }
 
-    const { uid } = firebase.auth().currentUser;
+    const { uid } = auth.currentUser;
     const added = new Date();
     return firestore
       .doc(`machines/${query.docs[0].id}`)

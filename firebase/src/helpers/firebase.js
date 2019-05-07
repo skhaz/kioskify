@@ -12,8 +12,15 @@ const settings = {
   appId: '1:240347289134:web:63791f236524e6c6'
 };
 
-const wasInitialized = !!firebase.apps.length;
+const initialized = !!firebase.apps.length;
 
-export default (wasInitialized
-  ? firebase.app()
-  : firebase.initializeApp(settings));
+const instance = initialized ? firebase.app() : firebase.initializeApp(settings);
+
+const auth = instance.auth();
+
+const firestore = instance.firestore();
+
+export {
+  auth,
+  firestore
+}

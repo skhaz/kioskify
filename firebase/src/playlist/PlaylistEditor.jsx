@@ -5,12 +5,10 @@ import { makeStyles } from '@material-ui/styles';
 import Paper from '@material-ui/core/Paper';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
-import firebase from '../helpers/firebase';
+import { firestore } from '../helpers/firebase';
 import AddDialog from './AddDialog';
 import SortableContainer from './SortableContainer';
 import PreviewDialog from './PreviewDialog';
-
-const firestore = firebase.firestore();
 
 const useStyles = makeStyles(theme => ({
   paper: {

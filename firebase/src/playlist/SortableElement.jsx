@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { sortableElement } from 'react-sortable-hoc';
-
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
-
-import firebase from '../helpers/firebase';
-
-const firestore = firebase.firestore();
+import { firestore } from '../helpers/firebase';
 
 const useStyles = makeStyles(theme => ({
   card: {

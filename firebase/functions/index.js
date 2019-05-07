@@ -16,6 +16,7 @@ exports.f0 = functions.auth
   .user()
   .onCreate((user) => {
     const { email, displayName } = user;
+    return console.log(email, displayName);
   });
 
 exports.f1 = functions.firestore
