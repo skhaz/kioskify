@@ -87,7 +87,7 @@ export default () => {
   return (
     <Paper className={classes.paper}>
       <List disablePadding className={classes.list}>
-        {!loading &&
+        {!loading && (
           machines.map(machine => (
             <ListItem button key={machine.id}>
               <ListItemText
@@ -95,7 +95,8 @@ export default () => {
                 secondary={machine.location || 'Unknow location'}
               />
             </ListItem>
-          ))}
+          )
+        ))}
       </List>
       <AddDialog
         open={visible}
