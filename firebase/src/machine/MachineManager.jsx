@@ -95,8 +95,8 @@ export default () => {
                 secondary={machine.location || 'Unknow location'}
               />
             </ListItem>
-          )
-        ))}
+          ))
+        )}
       </List>
       <AddDialog
         open={visible}
