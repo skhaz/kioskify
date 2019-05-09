@@ -22,6 +22,7 @@ import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.util.Log;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.common.base.Strings;
@@ -149,6 +150,7 @@ public class PlayerController {
 
         unsubscribe =
                 firestore.collection("v1")
+                        // .whereEqualTo("enabled", true)
                         .whereEqualTo("gid", firestore.collection("groups")
                                 .document("y0mFxOO9CSGzHHiMypPs"))
                         .addSnapshotListener(onSnapshot);
@@ -250,7 +252,7 @@ public class PlayerController {
                     }
                 });
             }
-        }, 300);
+        }, 1000);
 
     }
 
@@ -273,7 +275,6 @@ public class PlayerController {
 
         @Override
         public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-
         }
 
         @Override

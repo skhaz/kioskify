@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.provider.Settings.Secure;
 import android.view.View;
 import android.widget.TextView;
 
@@ -54,7 +53,7 @@ public class RegisterController implements EventListener<DocumentSnapshot> {
         MutableLiveData v = new MutableLiveData();
         v.postValue("a");
 
-        move to the same player controler?
+        // move to the same player controler?
 
         if (firstRun) {
             Random random = new Random();
