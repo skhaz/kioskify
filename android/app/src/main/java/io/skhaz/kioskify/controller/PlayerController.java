@@ -180,6 +180,7 @@ public class PlayerController {
                         if (groupId == null) {
                             return;
                         }
+
                         /*
                                 FirebaseMessaging.getInstance().subscribeToTopic("/topics/y0mFxOO9CSGzHHiMypPs")
                 .addOnCompleteListener(new OnCompleteListener<Void>() {

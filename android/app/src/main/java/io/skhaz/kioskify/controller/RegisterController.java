@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,7 +26,7 @@ import java.util.Random;
 
 import io.skhaz.kioskify.R;
 
-public class RegisterController implements EventListener<DocumentSnapshot> {
+public class RegisterController {
 
     public static final String MACHINE_PREFS = "MACHINE_ID";
 
@@ -33,7 +34,7 @@ public class RegisterController implements EventListener<DocumentSnapshot> {
 
     private FirebaseFirestore firestore;
 
-    private ListenerRegistration listener;
+    private ListenerRegistration subscriber;
 
     private TextView textView;
 
@@ -46,7 +47,7 @@ public class RegisterController implements EventListener<DocumentSnapshot> {
         this.textView = textView;
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(context);
-        final String machineId = sharedPreferences.getString(MACHINE_PREFS, null);
+        String machineId = sharedPreferences.getString(MACHINE_PREFS, null);
         boolean firstRun = Strings.isNullOrEmpty(machineId);
 
         if (firstRun) {
@@ -74,46 +75,58 @@ public class RegisterController implements EventListener<DocumentSnapshot> {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
                             SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString(MACHINE_PREFS, documentReference.getId());
+                            String machineId = documentReference.getId();
+                            editor.putString(MACHINE_PREFS, machineId);
                             editor.apply();
 
                             textView.setVisibility(View.VISIBLE);
                             textView.setText(pinCode);
+                            asdf(machineId);
                         }
                     });
 
         } else {
-            listener = firestore.collection("machines").document(machineId)
-                    .addSnapshotListener(this);
+            asdf(machineId);
         }
     }
 
     public void tearDown() {
         textView.setVisibility(View.GONE);
 
-        if (listener != null) {
-            listener.remove();
+        if (subscriber != null) {
+            subscriber.remove();
         }
     }
 
-    @Override
-    public void onEvent(
-            @Nullable DocumentSnapshot documentSnapshot,
-            @Nullable FirebaseFirestoreException exception) {
-
-        if (documentSnapshot == null) {
-            return;
+    private void asdf(@NonNull String machineId) {
+        if (subscriber != null) {
+            subscriber.remove();
+            subscriber = null;
         }
 
-        String pinCode = documentSnapshot.getString("pinCode");
+        subscriber = firestore.collection("machines")
+                .document(machineId)
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
 
-        if (Strings.isNullOrEmpty(pinCode)) {
-            tearDown();
+                    @Override
+                    public void onEvent(
+                            @Nullable DocumentSnapshot documentSnapshot,
+                            @Nullable FirebaseFirestoreException exception) {
+                        if (documentSnapshot == null) {
+                            return;
+                        }
 
-            return;
-        }
+                        String pinCode = documentSnapshot.getString("pinCode");
 
-        textView.setVisibility(View.VISIBLE);
-        textView.setText(pinCode);
+                        if (Strings.isNullOrEmpty(pinCode)) {
+                            tearDown();
+
+                            return;
+                        }
+
+                        textView.setVisibility(View.VISIBLE);
+                        textView.setText(pinCode);
+                    }
+                });
     }
 }
