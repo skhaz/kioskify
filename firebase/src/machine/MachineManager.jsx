@@ -68,7 +68,6 @@ export default () => {
   const [error, loading, machines] = useMachines();
 
   const handleSubmit = async value => {
-
     if (value.replace(/\s/g, '') === '') {
       return;
     }

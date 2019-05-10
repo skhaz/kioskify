@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/styles';
 import Paper from '@material-ui/core/Paper';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
-import { firestore } from '../helpers/firebase';
+import { firestore, auth } from '../helpers/firebase';
 import AddDialog from './AddDialog';
 import SortableContainer from './SortableContainer';
 import PreviewDialog from './PreviewDialog';
@@ -110,9 +110,16 @@ export default () => {
   };
 
   const handleSubmit = async yid => {
-    const gid = firestore.doc('groups/y0mFxOO9CSGzHHiMypPs');
+    const { uid: owner } = auth.currentUser;
 
-    const query = await firestore
+    const query1 = await firestore
+      .collection('groups')
+      .where('owner', '==', owner)
+      .where('default', '==', true)
+      .limit(1)
+      .get();
+
+    const query2 = await firestore
       .collection('videos')
       .where('yid', '==', yid)
       .limit(1)
@@ -120,11 +127,14 @@ export default () => {
 
     const added = new Date();
     const batch = firestore.batch();
-    const newRef = firestore.collection('videos').doc();
-    const docRef = query.empty ? newRef : query.docs[0].ref;
-    batch.set(docRef, { added, yid, gid }, { merge: true });
+    const newRef1 = firestore.collection('groups').doc();
+    const gidRef = query1.empty ? newRef1 : query1.docs[0].ref;
+    const newRef2 = firestore.collection('videos').doc();
+    const docRef = query2.empty ? newRef2 : query2.docs[0].ref;
+    batch.set(gidRef, { owner, default: true }, { merge: true });
+    batch.set(docRef, { added, yid, gid: gidRef }, { merge: true });
     const v1Ref = firestore.collection('v1').doc();
-    batch.set(v1Ref, { gid, vid: docRef, '#': items.length });
+    batch.set(v1Ref, { gid: gidRef, vid: docRef, '#': items.length });
     return batch.commit();
   };
 
