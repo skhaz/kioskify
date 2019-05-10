@@ -68,9 +68,14 @@ export default () => {
   const [error, loading, machines] = useMachines();
 
   const handleSubmit = async value => {
+
+    if(value.replace(/\s/g, '') === '') {
+      return;
+    }
+
     const query = await firestore
       .collection('machines')
-      .where('pinCode', '==', value)
+      .where('pinCode', '==', value.toUpperCase())
       .limit(1)
       .get();
 
