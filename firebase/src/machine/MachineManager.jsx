@@ -6,6 +6,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
+import firebase from 'firebase/app';
 import { firestore, auth } from '../helpers/firebase';
 import AddDialog from './AddDialog';
 
@@ -76,10 +77,13 @@ export default () => {
     }
 
     const { uid } = auth.currentUser;
-    const added = new Date();
-    return firestore
-      .doc(`machines/${query.docs[0].id}`)
-      .set({ owner: uid, added });
+    const groupRef = firestore.doc(`groups/${'y0mFxOO9CSGzHHiMypPs'}`);
+    return firestore.doc(`machines/${query.docs[0].id}`).update({
+      added: new Date(),
+      gid: groupRef,
+      owner: uid,
+      pinCode: firebase.firestore.FieldValue.delete(),
+    });
   };
 
   return (

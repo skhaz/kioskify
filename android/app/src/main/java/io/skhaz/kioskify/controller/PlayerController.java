@@ -57,6 +57,8 @@ import static io.skhaz.kioskify.controller.RegisterController.MACHINE_PREFS;
 
 public class PlayerController {
 
+    private final Map<Entry, Video> mediaSources = new TreeMap<>();
+
     private ListenerRegistration subscriber;
 
     private ListenerRegistration innerSubscriber;
@@ -72,8 +74,6 @@ public class PlayerController {
     private DataSource.Factory dataSourceFactory;
 
     private DownloadTracker downloadTracker;
-
-    private Map<Entry, Video> mediaSources = new TreeMap<>();
 
     private Timer debounce;
 
@@ -176,6 +176,16 @@ public class PlayerController {
                                 documentSnapshot.getDocumentReference("gid");
 
                         if (groupId == null) {
+                            synchronized (mediaSources) {
+                                if (mediaSources.isEmpty()) {
+                                    return;
+                                }
+
+                                mediaSources.clear();
+
+                                buildPlaylist();
+                            }
+
                             return;
                         }
 
@@ -290,7 +300,7 @@ public class PlayerController {
         debounce = new Timer();
 
         debounce.schedule(new TimerTask() {
-            public void run() {
+            public synchronized void run() {
                 List<Map.Entry<Entry, Video>> entries
                         = new ArrayList<>(mediaSources.entrySet());
 
