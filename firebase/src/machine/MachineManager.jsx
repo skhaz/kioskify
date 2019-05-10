@@ -28,20 +28,25 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+
 const useMachines = () => {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [machines, setMachines] = React.useState([]);
 
   useEffect(() => {
+    const { uid } = auth.currentUser;
+    console.log('uid', uid)
     const unsubscribe = firestore
       .collection('machines')
+      .where('owner', '==', uid)
       .orderBy('added')
-      .onSnapshot(
+      .get(
         snapshot => {
           const machines = [];
 
           snapshot.forEach(doc => {
+            console.log('owner', doc.data().owner)
             machines.push({ id: doc.id, ...doc.data() });
           });
 
@@ -76,8 +81,8 @@ export default () => {
       return;
     }
 
-    const { uid } = auth.currentUser;
     const groupRef = firestore.doc(`groups/${'y0mFxOO9CSGzHHiMypPs'}`);
+    const { uid } = auth.currentUser;
     return firestore.doc(`machines/${query.docs[0].id}`).update({
       added: new Date(),
       gid: groupRef,

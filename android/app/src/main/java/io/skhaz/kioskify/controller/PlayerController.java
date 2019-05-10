@@ -58,27 +58,16 @@ import static io.skhaz.kioskify.controller.RegisterController.MACHINE_PREFS;
 public class PlayerController {
 
     private final Map<Entry, Video> mediaSources = new TreeMap<>();
-
-    private ListenerRegistration subscriber;
-
-    private ListenerRegistration innerSubscriber;
-
-    private OnSharedPreferenceChangeListener preferenceChangeListener;
-
-    private Context context;
-
-    private SimpleExoPlayer player;
-
-    private FirebaseFirestore firestore;
-
-    private DataSource.Factory dataSourceFactory;
-
-    private DownloadTracker downloadTracker;
-
-    private Timer debounce;
-
     SharedPreferences sharedPreferences;
-
+    private ListenerRegistration subscriber;
+    private ListenerRegistration innerSubscriber;
+    private OnSharedPreferenceChangeListener preferenceChangeListener;
+    private Context context;
+    private SimpleExoPlayer player;
+    private FirebaseFirestore firestore;
+    private DataSource.Factory dataSourceFactory;
+    private DownloadTracker downloadTracker;
+    private Timer debounce;
     EventListener<QuerySnapshot> onSnapshot = new EventListener<QuerySnapshot>() {
         @Override
         public void onEvent(@Nullable QuerySnapshot snapshots,
@@ -180,17 +169,30 @@ public class PlayerController {
                             }
                         }
 
+                        if (innerSubscriber != null) {
+                            innerSubscriber.remove();
+                            innerSubscriber = null;
+                        }
+
                         DocumentReference groupId =
                                 documentSnapshot.getDocumentReference("gid");
 
                         if (groupId == null) {
                             return;
                         }
-
-                        if (innerSubscriber != null) {
-                            innerSubscriber.remove();
-                            innerSubscriber = null;
+                        /*
+                                FirebaseMessaging.getInstance().subscribeToTopic("/topics/y0mFxOO9CSGzHHiMypPs")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = "subscribed";
+                        if (!task.isSuccessful()) {
+                            msg = "subscribe_failed";
                         }
+                        // Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+                         */
 
                         innerSubscriber = firestore.collection("v1")
                                 .whereEqualTo("gid", groupId)
