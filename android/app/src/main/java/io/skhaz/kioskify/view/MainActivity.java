@@ -8,14 +8,13 @@ import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.widget.TextView;
 
-import com.google.android.exoplayer2.PlaybackPreparer;
 import com.google.android.exoplayer2.ui.PlayerView;
 
 import io.skhaz.kioskify.R;
 import io.skhaz.kioskify.controller.PlayerController;
 import io.skhaz.kioskify.controller.RegisterController;
 
-public class MainActivity extends Activity implements PlaybackPreparer {
+public class MainActivity extends Activity {
 
     private PlayerView playerView;
 
@@ -37,8 +36,7 @@ public class MainActivity extends Activity implements PlaybackPreparer {
 
         playerView = findViewById(R.id.player_view);
         playerView.requestFocus();
-        // playerView.setUseController(false);
-        playerView.setPlaybackPreparer(this);
+        playerView.setUseController(false);
         textView = findViewById(R.id.text_view);
         playerController = new PlayerController(this);
         registerController = new RegisterController(this);
@@ -47,6 +45,7 @@ public class MainActivity extends Activity implements PlaybackPreparer {
     @Override
     protected void onStart() {
         super.onStart();
+
         playerController.init(playerView);
         registerController.init(textView);
     }
@@ -75,10 +74,5 @@ public class MainActivity extends Activity implements PlaybackPreparer {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         return playerView.dispatchKeyEvent(event) || super.dispatchKeyEvent(event);
-    }
-
-    @Override
-    public void preparePlayback() {
-        playerController.init(playerView);
     }
 }
