@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.google.android.exoplayer2.PlaybackPreparer;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 import io.skhaz.kioskify.R;
 import io.skhaz.kioskify.controller.PlayerController;
@@ -43,13 +42,6 @@ public class MainActivity extends Activity implements PlaybackPreparer {
         textView = findViewById(R.id.text_view);
         playerController = new PlayerController(this);
         registerController = new RegisterController(this);
-
-        GoogleSignInOptions googleSignInOptions =
-                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestIdToken(getString(R.string.default_web_client_id))
-                        .requestEmail()
-                        .build();
-
     }
 
     @Override

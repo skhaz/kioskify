@@ -6,11 +6,14 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.common.base.Strings;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -35,6 +38,8 @@ public class RegisterController {
     private FirebaseFirestore firestore;
 
     private ListenerRegistration subscriber;
+
+    private Task<DocumentReference> referenceTask;
 
     private TextView textView;
 
@@ -70,24 +75,31 @@ public class RegisterController {
             document.put("fingerprint", Build.FINGERPRINT);
             document.put("added", Calendar.getInstance().getTime());
 
-            firestore.collection("machines").add(document)
-                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            referenceTask = firestore
+                    .collection("machines").add(document);
+
+            referenceTask.addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
+                            textView.setVisibility(View.VISIBLE);
+                            textView.setText(pinCode);
+
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             String machineId = documentReference.getId();
                             editor.putString(MACHINE_PREFS, machineId);
                             editor.apply();
-
-                            textView.setVisibility(View.VISIBLE);
-                            textView.setText(pinCode);
-
-                            startListen(machineId);
+                            startToListen(machineId);
                         }
                     });
 
+            referenceTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+
+                }
+            });
         } else {
-            startListen(machineId);
+            startToListen(machineId);
         }
     }
 
@@ -99,7 +111,7 @@ public class RegisterController {
         }
     }
 
-    private void startListen(@NonNull String machineId) {
+    private void startToListen(@NonNull String machineId) {
         if (subscriber != null) {
             subscriber.remove();
             subscriber = null;
