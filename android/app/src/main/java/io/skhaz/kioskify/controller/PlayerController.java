@@ -192,11 +192,33 @@ public class PlayerController {
     }
 
     private void initSharedPreferences() {
-        final String machineId = sharedPreferences
+        String machineId = sharedPreferences
                 .getString(MACHINE_PREFS, null);
 
         if (Strings.isNullOrEmpty(machineId)) {
+            if (preferenceChangeListener != null) {
+                sharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
+                preferenceChangeListener = null;
+            }
+
+            preferenceChangeListener = new OnSharedPreferenceChangeListener() {
+                @Override
+                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                    if (MACHINE_PREFS.equals(key)) {
+                        String machineId = sharedPreferences.getString(MACHINE_PREFS, null);
+
+                        if (Strings.isNullOrEmpty(machineId)) {
+                            return;
+                        }
+
+                        initFirebase(machineId);
+                    }
+                }
+            };
+
             sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
+        } else {
+            initFirebase(machineId);
         }
     }
 
