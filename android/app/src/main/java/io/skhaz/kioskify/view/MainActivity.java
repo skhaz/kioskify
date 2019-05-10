@@ -30,6 +30,8 @@ import io.skhaz.kioskify.controller.RegisterController;
 
 public class MainActivity extends Activity implements PlaybackPreparer, View.OnClickListener {
 
+    private static final int RC_SIGN_IN = 9001;
+
     private PlayerView playerView;
 
     private TextView textView;
@@ -39,8 +41,6 @@ public class MainActivity extends Activity implements PlaybackPreparer, View.OnC
     private RegisterController registerController;
 
     private GoogleSignInClient googleSignInClient;
-
-    private static final int RC_SIGN_IN = 9001;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -153,7 +153,6 @@ public class MainActivity extends Activity implements PlaybackPreparer, View.OnC
 
     @Override
     public void preparePlayback() {
-        Log.d(">>>", "preparePlayback");
         playerController.init(playerView);
     }
 

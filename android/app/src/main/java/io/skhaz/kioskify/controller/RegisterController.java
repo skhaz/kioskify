@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.common.base.Strings;
@@ -28,11 +27,11 @@ import io.skhaz.kioskify.R;
 
 public class RegisterController implements EventListener<DocumentSnapshot> {
 
+    public static final String MACHINE_PREFS = "MACHINE_ID";
+
     private Context context;
 
     private FirebaseFirestore firestore;
-
-    private SharedPreferences prefs;
 
     private ListenerRegistration listener;
 
@@ -41,19 +40,14 @@ public class RegisterController implements EventListener<DocumentSnapshot> {
     public RegisterController(Context context) {
         this.context = context;
         firestore = FirebaseFirestore.getInstance();
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     public void init(TextView textView) {
         this.textView = textView;
-        final String machineId = prefs.getString("machine_id", null);
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(context);
+        final String machineId = sharedPreferences.getString(MACHINE_PREFS, null);
         boolean firstRun = Strings.isNullOrEmpty(machineId);
-
-
-        MutableLiveData v = new MutableLiveData();
-        v.postValue("a");
-
-        // move to the same player controler?
 
         if (firstRun) {
             Random random = new Random();
@@ -79,8 +73,8 @@ public class RegisterController implements EventListener<DocumentSnapshot> {
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
-                            SharedPreferences.Editor editor = prefs.edit();
-                            editor.putString("machine_id", documentReference.getId());
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString(MACHINE_PREFS, documentReference.getId());
                             editor.apply();
 
                             textView.setVisibility(View.VISIBLE);
@@ -89,12 +83,14 @@ public class RegisterController implements EventListener<DocumentSnapshot> {
                     });
 
         } else {
-            firestore.collection("machines").document(machineId)
+            listener = firestore.collection("machines").document(machineId)
                     .addSnapshotListener(this);
         }
     }
 
     public void tearDown() {
+        textView.setVisibility(View.GONE);
+
         if (listener != null) {
             listener.remove();
         }
@@ -112,7 +108,7 @@ public class RegisterController implements EventListener<DocumentSnapshot> {
         String pinCode = documentSnapshot.getString("pinCode");
 
         if (Strings.isNullOrEmpty(pinCode)) {
-            textView.setVisibility(View.GONE);
+            tearDown();
 
             return;
         }

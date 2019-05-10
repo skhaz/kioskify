@@ -1,9 +1,12 @@
 package io.skhaz.kioskify.controller;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.webkit.URLUtil;
 
 import androidx.annotation.NonNull;
@@ -22,7 +25,6 @@ import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.util.Log;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.common.base.Strings;
@@ -51,9 +53,15 @@ import io.skhaz.kioskify.helper.DownloadTracker;
 import io.skhaz.kioskify.model.Entry;
 import io.skhaz.kioskify.model.Video;
 
+import static io.skhaz.kioskify.controller.RegisterController.MACHINE_PREFS;
+
 public class PlayerController {
 
-    private ListenerRegistration unsubscribe;
+    private ListenerRegistration subscriber;
+
+    private ListenerRegistration innerSubscriber;
+
+    private OnSharedPreferenceChangeListener preferenceChangeListener;
 
     private Context context;
 
@@ -68,6 +76,8 @@ public class PlayerController {
     private Map<Entry, Video> mediaSources = new TreeMap<>();
 
     private Timer debounce;
+
+    SharedPreferences sharedPreferences;
 
     EventListener<QuerySnapshot> onSnapshot = new EventListener<QuerySnapshot>() {
         @Override
@@ -124,11 +134,13 @@ public class PlayerController {
         dataSourceFactory = buildDataSourceFactory();
         downloadTracker = getDownloadTracker();
         firestore = FirebaseFirestore.getInstance();
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     public void init(PlayerView playerView) {
         initPlayer(playerView);
-        initFirebase();
+        // initFirebase();
+        initSharedPreferences();
     }
 
     private void initPlayer(PlayerView playerView) {
@@ -143,17 +155,61 @@ public class PlayerController {
         playerView.setPlayer(player);
     }
 
-    private void initFirebase() {
+    private void initFirebase(@NonNull String id) {
+        if (subscriber != null) {
+            subscriber.remove();
+            subscriber = null;
+        }
+
+        subscriber = firestore
+                .collection("machines")
+                .document(id)
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot,
+                                        @Nullable FirebaseFirestoreException exception) {
+                        if (exception != null || documentSnapshot == null) {
+                            return;
+                        }
+
+                        DocumentReference groupId =
+                                documentSnapshot.getDocumentReference("gid");
+
+                        if (groupId == null) {
+                            return;
+                        }
+
+                        if (innerSubscriber != null) {
+                            innerSubscriber.remove();
+                            innerSubscriber = null;
+                        }
+
+                        innerSubscriber = firestore.collection("v1")
+                                .whereEqualTo("gid", groupId)
+                                .addSnapshotListener(onSnapshot);
+                    }
+                });
+        /*
         if (unsubscribe != null) {
             return;
         }
 
-        unsubscribe =
+        unsubscribe2 =
                 firestore.collection("v1")
                         // .whereEqualTo("enabled", true)
                         .whereEqualTo("gid", firestore.collection("groups")
                                 .document("y0mFxOO9CSGzHHiMypPs"))
                         .addSnapshotListener(onSnapshot);
+        */
+    }
+
+    private void initSharedPreferences() {
+        final String machineId = sharedPreferences
+                .getString(MACHINE_PREFS, null);
+
+        if (Strings.isNullOrEmpty(machineId)) {
+            sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
+        }
     }
 
     public void tearDown() {
@@ -162,9 +218,19 @@ public class PlayerController {
             player = null;
         }
 
-        if (unsubscribe != null) {
-            unsubscribe.remove();
-            unsubscribe = null;
+        if (preferenceChangeListener != null) {
+            sharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
+            preferenceChangeListener = null;
+        }
+
+        if (subscriber != null) {
+            subscriber.remove();
+            subscriber = null;
+        }
+
+        if (innerSubscriber != null) {
+            innerSubscriber.remove();
+            innerSubscriber = null;
         }
     }
 
