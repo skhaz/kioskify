@@ -189,18 +189,6 @@ public class PlayerController {
                                 .addSnapshotListener(onSnapshot);
                     }
                 });
-        /*
-        if (unsubscribe != null) {
-            return;
-        }
-
-        unsubscribe2 =
-                firestore.collection("v1")
-                        // .whereEqualTo("enabled", true)
-                        .whereEqualTo("gid", firestore.collection("groups")
-                                .document("y0mFxOO9CSGzHHiMypPs"))
-                        .addSnapshotListener(onSnapshot);
-        */
     }
 
     private void initSharedPreferences() {
