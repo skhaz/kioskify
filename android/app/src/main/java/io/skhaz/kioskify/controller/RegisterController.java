@@ -103,6 +103,7 @@ public class RegisterController {
     }
 
     public void tearDown() {
+        textView.setText(null);
         textView.setVisibility(View.GONE);
 
         if (subscriber != null) {
