@@ -69,7 +69,7 @@ export default () => {
 
   const handleSubmit = async value => {
 
-    if(value.replace(/\s/g, '') === '') {
+    if (value.replace(/\s/g, '') === '') {
       return;
     }
 
@@ -104,7 +104,7 @@ export default () => {
             <ListItem button key={machine.id}>
               <ListItemText
                 primary={machine.model || 'Untitled'}
-                secondary={machine.manufacture || 'Unknow location'}
+                secondary={machine.manufacture || 'Unknow'}
               />
             </ListItem>
           ))
