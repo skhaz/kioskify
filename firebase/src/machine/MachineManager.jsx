@@ -98,10 +98,10 @@ export default () => {
 
     const batch = firestore.batch();
     const added = new Date();
-    batch.set(gid, { owner, default: true }, { merge: true });
     const { ref } = query1.docs[0];
     batch.update(ref, { pinCode: firebase.firestore.FieldValue.delete() });
     batch.update(ref, { owner, added, gid });
+    batch.set(gid, { owner, default: true }, { merge: true });
     return batch.commit();
   };
 
