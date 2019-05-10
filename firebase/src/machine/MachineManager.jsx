@@ -72,27 +72,37 @@ export default () => {
       return;
     }
 
-    const query = await firestore
+    const query1 = await firestore
       .collection('machines')
       .where('pinCode', '==', value.toUpperCase())
       .limit(1)
       .get();
 
-    if (query.empty) {
+    if (query1.empty) {
       // ...
       return;
     }
 
-    const groupRef = firestore.doc(`groups/${'y0mFxOO9CSGzHHiMypPs'}`);
+    const { uid: owner } = auth.currentUser;
 
-    const { uid } = auth.currentUser;
+    const query2 = await firestore
+      .collection('groups')
+      .where('owner', '==', owner)
+      .where('default', '==', true)
+      .limit(1)
+      .get();
 
-    return firestore.doc(`machines/${query.docs[0].id}`).update({
-      added: new Date(),
-      gid: groupRef,
-      owner: uid,
-      pinCode: firebase.firestore.FieldValue.delete(),
-    });
+    const gid = query2.empty
+      ? firestore.collection('groups').doc()
+      : query2.docs[0].ref;
+
+    const batch = firestore.batch();
+    const added = new Date();
+    batch.set(groupRef, { owner, default: true }, { merge: true });
+    const { ref } = query1.docs[0];
+    batch.update(ref, { pinCode: firebase.firestore.FieldValue.delete() });
+    batch.update(ref, { owner, added, gid });
+    return batch.commit();
   };
 
   return (
