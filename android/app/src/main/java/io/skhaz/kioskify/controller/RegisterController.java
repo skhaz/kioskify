@@ -81,12 +81,13 @@ public class RegisterController {
 
                             textView.setVisibility(View.VISIBLE);
                             textView.setText(pinCode);
-                            asdf(machineId);
+
+                            startListen(machineId);
                         }
                     });
 
         } else {
-            asdf(machineId);
+            startListen(machineId);
         }
     }
 
@@ -98,7 +99,7 @@ public class RegisterController {
         }
     }
 
-    private void asdf(@NonNull String machineId) {
+    private void startListen(@NonNull String machineId) {
         if (subscriber != null) {
             subscriber.remove();
             subscriber = null;
@@ -107,7 +108,6 @@ public class RegisterController {
         subscriber = firestore.collection("machines")
                 .document(machineId)
                 .addSnapshotListener(new EventListener<DocumentSnapshot>() {
-
                     @Override
                     public void onEvent(
                             @Nullable DocumentSnapshot documentSnapshot,
