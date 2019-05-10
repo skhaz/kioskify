@@ -39,8 +39,8 @@ const useMachines = () => {
 
     const unsubscribe = firestore
       .collection('machines')
+      //.orderBy('added')
       .where('owner', '==', uid)
-      .orderBy('added')
       .onSnapshot(
         snapshot => {
           const machines = [];
@@ -51,6 +51,9 @@ const useMachines = () => {
 
           setLoading(false);
           setMachines(machines);
+
+          console.log(machines)
+          console.log(uid)
         },
         error => setError(error)
       );
