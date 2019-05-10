@@ -39,7 +39,6 @@ const useMachines = () => {
 
     const unsubscribe = firestore
       .collection('machines')
-      //.orderBy('added')
       .where('owner', '==', uid)
       .onSnapshot(
         snapshot => {
@@ -51,9 +50,6 @@ const useMachines = () => {
 
           setLoading(false);
           setMachines(machines);
-
-          console.log(machines)
-          console.log(uid)
         },
         error => setError(error)
       );
@@ -84,7 +80,9 @@ export default () => {
     }
 
     const groupRef = firestore.doc(`groups/${'y0mFxOO9CSGzHHiMypPs'}`);
+
     const { uid } = auth.currentUser;
+
     return firestore.doc(`machines/${query.docs[0].id}`).update({
       added: new Date(),
       gid: groupRef,
