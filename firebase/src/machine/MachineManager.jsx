@@ -36,17 +36,16 @@ const useMachines = () => {
 
   useEffect(() => {
     const { uid } = auth.currentUser;
-    console.log('uid', uid)
+
     const unsubscribe = firestore
       .collection('machines')
       .where('owner', '==', uid)
       .orderBy('added')
-      .get(
+      .onSnapshot(
         snapshot => {
           const machines = [];
 
           snapshot.forEach(doc => {
-            console.log('owner', doc.data().owner)
             machines.push({ id: doc.id, ...doc.data() });
           });
 
