@@ -14,9 +14,12 @@ const pubsub = new PubSub();
 
 exports.f0 = functions.auth
   .user()
-  .onCreate((user) => {
-    const { email, displayName } = user;
-    return console.log(email, displayName);
+  .onCreate(async (user) => {
+    const { uid: owner } = user;
+
+    return firestore
+      .collection('groups')
+      .add({ owner, default: true });
   });
 
 exports.f1 = functions.firestore
@@ -57,6 +60,7 @@ exports.f2 = functions
         }
 
         const filename = [vid, 'mp4'].join('.');
+
         const stream = storage
           .bucket(settings.bucket)
           .file(path.join(gid, filename))
