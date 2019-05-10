@@ -103,8 +103,8 @@ export default () => {
           machines.map(machine => (
             <ListItem button key={machine.id}>
               <ListItemText
-                primary={machine.name || 'Untitled'}
-                secondary={machine.location || 'Unknow location'}
+                primary={machine.model || 'Untitled'}
+                secondary={machine.manufacture || 'Unknow location'}
               />
             </ListItem>
           ))

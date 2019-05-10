@@ -6,7 +6,6 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -88,7 +87,7 @@ public class RegisterController {
                             String machineId = documentReference.getId();
                             editor.putString(MACHINE_PREFS, machineId);
                             editor.apply();
-                            startToListen(machineId);
+                            subscribeToChanges(machineId);
                         }
                     });
 
@@ -99,7 +98,7 @@ public class RegisterController {
                 }
             });
         } else {
-            startToListen(machineId);
+            subscribeToChanges(machineId);
         }
     }
 
@@ -111,7 +110,7 @@ public class RegisterController {
         }
     }
 
-    private void startToListen(@NonNull String machineId) {
+    private void subscribeToChanges(@NonNull String machineId) {
         if (subscriber != null) {
             subscriber.remove();
             subscriber = null;
