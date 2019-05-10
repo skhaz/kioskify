@@ -172,20 +172,18 @@ public class PlayerController {
                             return;
                         }
 
-                        DocumentReference groupId =
-                                documentSnapshot.getDocumentReference("gid");
-
-                        if (groupId == null) {
-                            synchronized (mediaSources) {
-                                if (mediaSources.isEmpty()) {
-                                    return;
-                                }
-
+                        synchronized (mediaSources) {
+                            if (!mediaSources.isEmpty()) {
                                 mediaSources.clear();
 
                                 buildPlaylist();
                             }
+                        }
 
+                        DocumentReference groupId =
+                                documentSnapshot.getDocumentReference("gid");
+
+                        if (groupId == null) {
                             return;
                         }
 
