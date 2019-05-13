@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.exoplayer2.util.Log;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -76,9 +77,21 @@ public class RegisterController {
             document.put("fingerprint", Build.FINGERPRINT);
             document.put("added", Calendar.getInstance().getTime());
 
-            Task<DocumentReference> referenceTask = firestore
-                    .collection("machines")
-                    .add(document);
+            DocumentReference reference = firestore.collection("machines").document();
+
+            machineId = reference.getId();
+
+            sharedPreferences.edit().putString(MACHINE_PREFS, machineId)
+                    .apply();
+
+            reference.set(document).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                @Override
+                public void onSuccess(Void aVoid) {
+                    textView.setVisibility(View.VISIBLE);
+                    textView.setText(pinCode);
+                }
+            });
 
             sharedPreferences.edit().putString(PINCODE_PREFS, pinCode)
                     .apply();
@@ -86,24 +99,9 @@ public class RegisterController {
             textView.setVisibility(View.VISIBLE);
             textView.setText(
                     context.getString(R.string.synchronizing));
-
-            referenceTask.addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                            textView.setVisibility(View.VISIBLE);
-                            textView.setText(pinCode);
-
-                            String machineId = documentReference.getId();
-
-                            sharedPreferences.edit().putString(MACHINE_PREFS, machineId)
-                                    .apply();
-
-                            subscribeToChanges(machineId);
-                        }
-                    });
-        } else {
-            subscribeToChanges(machineId);
         }
+
+        subscribeToChanges(machineId);
     }
 
     public void tearDown() {
@@ -132,6 +130,7 @@ public class RegisterController {
 
                         boolean invalidPinCode = Strings.isNullOrEmpty(pinCode);
 
+                        /*
                         SnapshotMetadata metadata = documentSnapshot.getMetadata();
 
                         if (metadata.hasPendingWrites()) {
@@ -143,6 +142,7 @@ public class RegisterController {
 
                             return;
                         }
+                        */
 
                         if (invalidPinCode) {
                             textView.setText(null);
