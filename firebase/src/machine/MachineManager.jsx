@@ -28,7 +28,6 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-
 const useMachines = () => {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -79,7 +78,7 @@ export default () => {
       .get();
 
     if (query1.empty) {
-      
+      alert('machine not found or offline!');
       // ...
       return;
     }
