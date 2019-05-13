@@ -79,8 +79,7 @@ export default () => {
       .get();
 
     if (query1.empty) {
-      alert('not found!');
-      asdf
+      
       // ...
       return;
     }
