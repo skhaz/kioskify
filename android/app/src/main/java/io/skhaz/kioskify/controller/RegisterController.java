@@ -57,7 +57,9 @@ public class RegisterController {
 
         String machineId = sharedPreferences.getString(MACHINE_PREFS, null);
 
-        if (Strings.isNullOrEmpty(machineId)) {
+        boolean firstRun = Strings.isNullOrEmpty(machineId);
+
+        if (firstRun) {
             Random random = new Random();
             String allowedCharacters = context.getString(R.string.allowed_characters);
             StringBuilder builder = new StringBuilder();
@@ -129,20 +131,6 @@ public class RegisterController {
                         String pinCode = documentSnapshot.getString("pinCode");
 
                         boolean invalidPinCode = Strings.isNullOrEmpty(pinCode);
-
-                        /*
-                        SnapshotMetadata metadata = documentSnapshot.getMetadata();
-
-                        if (metadata.hasPendingWrites()) {
-                            if (!invalidPinCode) {
-                                textView.setVisibility(View.VISIBLE);
-                                textView.setText(
-                                        context.getString(R.string.synchronizing));
-                            }
-
-                            return;
-                        }
-                        */
 
                         if (invalidPinCode) {
                             textView.setText(null);
