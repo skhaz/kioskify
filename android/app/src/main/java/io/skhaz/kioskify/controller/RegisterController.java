@@ -93,10 +93,11 @@ public class RegisterController {
                             textView.setVisibility(View.VISIBLE);
                             textView.setText(pinCode);
 
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
                             String machineId = documentReference.getId();
-                            editor.putString(MACHINE_PREFS, machineId);
-                            editor.apply();
+
+                            sharedPreferences.edit().putString(MACHINE_PREFS, machineId)
+                                    .apply();
+
                             subscribeToChanges(machineId);
                         }
                     });
