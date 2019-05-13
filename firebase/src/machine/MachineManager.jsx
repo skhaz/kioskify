@@ -83,6 +83,8 @@ export default () => {
       return;
     }
 
+    const { ref } = query1.docs[0];
+
     const { uid: owner } = auth.currentUser;
 
     const query2 = await firestore
@@ -97,10 +99,8 @@ export default () => {
       : query2.docs[0].ref;
 
     const batch = firestore.batch();
-    const added = new Date();
-    const { ref } = query1.docs[0];
     batch.update(ref, { pinCode: firebase.firestore.FieldValue.delete() });
-    batch.update(ref, { owner, added, gid });
+    batch.update(ref, { owner, gid, added: new Date() });
     batch.set(gid, { owner, default: true }, { merge: true });
     return batch.commit();
   };
