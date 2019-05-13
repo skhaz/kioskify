@@ -37,6 +37,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,16 +59,29 @@ import static io.skhaz.kioskify.controller.RegisterController.MACHINE_PREFS;
 public class PlayerController {
 
     private final Map<Entry, Video> mediaSources = new TreeMap<>();
-    SharedPreferences sharedPreferences;
+
+    private SharedPreferences sharedPreferences;
+
     private ListenerRegistration subscriber;
+
     private ListenerRegistration innerSubscriber;
+
     private OnSharedPreferenceChangeListener preferenceChangeListener;
+
     private Context context;
+
     private SimpleExoPlayer player;
+
     private FirebaseFirestore firestore;
+
+    private FirebaseMessaging messaging;
+
     private DataSource.Factory dataSourceFactory;
+
     private DownloadTracker downloadTracker;
+
     private Timer debounce;
+
     EventListener<QuerySnapshot> onSnapshot = new EventListener<QuerySnapshot>() {
         @Override
         public void onEvent(@Nullable QuerySnapshot snapshots,
@@ -123,6 +137,7 @@ public class PlayerController {
         dataSourceFactory = buildDataSourceFactory();
         downloadTracker = getDownloadTracker();
         firestore = FirebaseFirestore.getInstance();
+        messaging = FirebaseMessaging.getInstance();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
@@ -181,19 +196,15 @@ public class PlayerController {
                             return;
                         }
 
-                        /*
-                                FirebaseMessaging.getInstance().subscribeToTopic("/topics/y0mFxOO9CSGzHHiMypPs")
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        String msg = "subscribed";
-                        if (!task.isSuccessful()) {
-                            msg = "subscribe_failed";
+                        messaging.subscribeToTopic(String.format("/topics/%s", groupId));
+
+                        DocumentReference unsubscribe =
+                                documentSnapshot.getDocumentReference("unsubscribe");
+
+                        if (unsubscribe != null) {
+                            messaging.unsubscribeFromTopic(
+                                    String.format("/topics/%s", unsubscribe));
                         }
-                        // Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
-                         */
 
                         innerSubscriber = firestore.collection("v1")
                                 .whereEqualTo("gid", groupId)
