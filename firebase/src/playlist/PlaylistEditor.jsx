@@ -125,14 +125,13 @@ export default () => {
       .limit(1)
       .get();
 
-    const added = new Date();
     const batch = firestore.batch();
     const newRef1 = firestore.collection('groups').doc();
     const gidRef = query1.empty ? newRef1 : query1.docs[0].ref;
     const newRef2 = firestore.collection('videos').doc();
     const docRef = query2.empty ? newRef2 : query2.docs[0].ref;
     batch.set(gidRef, { owner, default: true }, { merge: true });
-    batch.set(docRef, { added, yid, gid: gidRef, owner }, { merge: true });
+    batch.set(docRef, { yid, gid: gidRef, owner, added: new Date() }, { merge: true });
     const v1Ref = firestore.collection('v1').doc();
     batch.set(v1Ref, { gid: gidRef, vid: docRef, owner, '#': items.length });
     return batch.commit();
