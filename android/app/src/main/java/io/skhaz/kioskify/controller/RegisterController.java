@@ -53,10 +53,10 @@ public class RegisterController {
         this.textView = textView;
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(context);
-        String machineId = sharedPreferences.getString(MACHINE_PREFS, null);
-        boolean firstRun = Strings.isNullOrEmpty(machineId);
 
-        if (firstRun) {
+        String machineId = sharedPreferences.getString(MACHINE_PREFS, null);
+
+        if (Strings.isNullOrEmpty(machineId)) {
             Random random = new Random();
             String allowedCharacters = context.getString(R.string.allowed_characters);
             StringBuilder builder = new StringBuilder();
