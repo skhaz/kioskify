@@ -37,7 +37,7 @@ public class MainActivity extends Activity implements PlaybackPreparer {
 
         playerView = findViewById(R.id.player_view);
         playerView.requestFocus();
-        // playerView.setUseController(false);
+        playerView.setUseController(false);
         playerView.setPlaybackPreparer(this);
         textView = findViewById(R.id.text_view);
         playerController = new PlayerController(this);

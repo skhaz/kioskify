@@ -196,14 +196,14 @@ public class PlayerController {
                             return;
                         }
 
-                        messaging.subscribeToTopic(String.format("/topics/%s", groupId));
+                        messaging.subscribeToTopic(String.format("/topics/%s", groupId.getId()));
 
                         DocumentReference unsubscribe =
                                 documentSnapshot.getDocumentReference("unsubscribe");
 
                         if (unsubscribe != null) {
                             messaging.unsubscribeFromTopic(
-                                    String.format("/topics/%s", unsubscribe));
+                                    String.format("/topics/%s", unsubscribe.getId()));
                         }
 
                         innerSubscriber = firestore.collection("v1")

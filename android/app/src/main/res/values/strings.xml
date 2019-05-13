@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Kioskify</string>
     <string name="allowed_characters">abcdefghijklmnopqrstuvwxyz</string>
+    <string name="synchronizing">Synchronizing, please wait...</string>
 </resources>

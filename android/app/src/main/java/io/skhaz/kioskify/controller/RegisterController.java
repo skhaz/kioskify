@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.exoplayer2.util.Log;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -20,6 +21,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.SnapshotMetadata;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -32,13 +34,13 @@ public class RegisterController {
 
     public static final String MACHINE_PREFS = "MACHINE_ID";
 
+    public static final String PINCODE_PREFS = "PIN_CODE";
+
     private Context context;
 
     private FirebaseFirestore firestore;
 
     private ListenerRegistration subscriber;
-
-    private Task<DocumentReference> referenceTask;
 
     private TextView textView;
 
@@ -74,8 +76,16 @@ public class RegisterController {
             document.put("fingerprint", Build.FINGERPRINT);
             document.put("added", Calendar.getInstance().getTime());
 
-            referenceTask = firestore
-                    .collection("machines").add(document);
+            Task<DocumentReference> referenceTask = firestore
+                    .collection("machines")
+                    .add(document);
+
+            sharedPreferences.edit().putString(PINCODE_PREFS, pinCode)
+                    .apply();
+
+            textView.setVisibility(View.VISIBLE);
+            textView.setText(
+                    context.getString(R.string.synchronizing));
 
             referenceTask.addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
@@ -90,22 +100,12 @@ public class RegisterController {
                             subscribeToChanges(machineId);
                         }
                     });
-
-            referenceTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-
-                }
-            });
         } else {
             subscribeToChanges(machineId);
         }
     }
 
     public void tearDown() {
-        textView.setText(null);
-        textView.setVisibility(View.GONE);
-
         if (subscriber != null) {
             subscriber.remove();
         }
@@ -121,17 +121,31 @@ public class RegisterController {
                 .document(machineId)
                 .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                     @Override
-                    public void onEvent(
-                            @Nullable DocumentSnapshot documentSnapshot,
-                            @Nullable FirebaseFirestoreException exception) {
-                        if (documentSnapshot == null) {
+                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot,
+                                        @Nullable FirebaseFirestoreException exception) {
+                        if (exception != null || documentSnapshot == null) {
                             return;
                         }
 
                         String pinCode = documentSnapshot.getString("pinCode");
 
-                        if (Strings.isNullOrEmpty(pinCode)) {
-                            tearDown();
+                        boolean invalidPinCode = Strings.isNullOrEmpty(pinCode);
+
+                        SnapshotMetadata metadata = documentSnapshot.getMetadata();
+
+                        if (metadata.hasPendingWrites()) {
+                            if (!invalidPinCode) {
+                                textView.setVisibility(View.VISIBLE);
+                                textView.setText(
+                                        context.getString(R.string.synchronizing));
+                            }
+
+                            return;
+                        }
+
+                        if (invalidPinCode) {
+                            textView.setText(null);
+                            textView.setVisibility(View.GONE);
 
                             return;
                         }
