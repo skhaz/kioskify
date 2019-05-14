@@ -25,6 +25,7 @@ import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.util.Log;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.common.base.Strings;
@@ -313,6 +314,7 @@ public class PlayerController {
 
         debounce.schedule(new TimerTask() {
             public synchronized void run() {
+                /* {{{ */
                 List<Map.Entry<Entry, Video>> entries
                         = new ArrayList<>(mediaSources.entrySet());
 
@@ -342,6 +344,7 @@ public class PlayerController {
 
                 final MediaSource mediaSource =
                         new ConcatenatingMediaSource(sources.toArray(new MediaSource[sources.size()]));
+                /* }}} */
 
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
@@ -373,11 +376,14 @@ public class PlayerController {
 
         @Override
         public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+            if (playbackState == Player.STATE_ENDED) {
+                // ...
+            }
         }
 
         @Override
         public void onPositionDiscontinuity(@DiscontinuityReason int reason) {
-
+            Log.d(">>>", "ContentPosition: " + player.getContentPosition());
         }
 
         @Override
@@ -387,7 +393,7 @@ public class PlayerController {
 
         @Override
         public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-
+            // player.getCurrentWindowIndex();
         }
     }
 }
