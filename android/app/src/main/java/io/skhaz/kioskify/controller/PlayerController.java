@@ -34,6 +34,7 @@ import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -50,7 +51,6 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
-import java.util.concurrent.ExecutionException;
 
 import io.skhaz.kioskify.application.Application;
 import io.skhaz.kioskify.helper.DownloadTracker;
@@ -62,6 +62,8 @@ import static io.skhaz.kioskify.controller.RegisterController.MACHINE_PREFS;
 public class PlayerController {
 
     private final Map<Entry, Video> mediaSources = new TreeMap<>();
+
+    private final List<Video> playlist = new ArrayList<>();
 
     private SharedPreferences sharedPreferences;
 
@@ -201,8 +203,7 @@ public class PlayerController {
 
                         List<Task<Void>> tasks = new ArrayList<>();
 
-                        Task<Void> subscribeTask = messaging.subscribeToTopic(
-                                String.format("/topics/%s", groupId.getId()));
+                        Task<Void> subscribeTask = messaging.subscribeToTopic(groupId.getId());
 
                         tasks.add(subscribeTask);
 
@@ -210,13 +211,19 @@ public class PlayerController {
                                 documentSnapshot.getDocumentReference("unsubscribe");
 
                         if (unsubscribe != null) {
-                            Task<Void> unsubscribeTask = messaging.unsubscribeFromTopic(
-                                    String.format("/topics/%s", unsubscribe.getId()));
-
-                            tasks.add(unsubscribeTask);
+                            String id = unsubscribe.getId();
+                            if (!Strings.isNullOrEmpty(id)) {
+                                Task<Void> unsubscribeTask = messaging.unsubscribeFromTopic(id);
+                                tasks.add(unsubscribeTask);
+                            }
                         }
 
-                        try { Tasks.await(Tasks.whenAll(tasks)); } catch (Exception ignored) { }
+                        Tasks.whenAll(tasks).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                // ...
+                            }
+                        });
 
                         innerSubscriber = firestore.collection("v1")
                                 .whereEqualTo("gid", groupId)
@@ -325,7 +332,6 @@ public class PlayerController {
 
         debounce.schedule(new TimerTask() {
             public synchronized void run() {
-                /* {{{ */
                 List<Map.Entry<Entry, Video>> entries
                         = new ArrayList<>(mediaSources.entrySet());
 
@@ -335,27 +341,34 @@ public class PlayerController {
                     }
                 });
 
+                synchronized (playlist) {
+                    playlist.clear();
+
+                    for (Map.Entry<Entry, Video> entry : entries) {
+                        Video video = entry.getValue();
+
+                        if (video == null) {
+                            continue;
+                        }
+
+                        String url = video.url;
+
+                        if (Strings.isNullOrEmpty(url) || !URLUtil.isValidUrl(url)) {
+                            continue;
+                        }
+
+                        playlist.add(video);
+                    }
+                }
+
                 List<MediaSource> sources = new ArrayList<>();
 
-                for (Map.Entry<Entry, Video> entry : entries) {
-                    Video video = entry.getValue();
-
-                    if (video == null) {
-                        continue;
-                    }
-
-                    String url = video.url;
-
-                    if (Strings.isNullOrEmpty(url) || !URLUtil.isValidUrl(url)) {
-                        continue;
-                    }
-
-                    sources.add(buildMediaSource(Uri.parse(url)));
+                for (Video video : playlist) {
+                    sources.add(buildMediaSource(Uri.parse(video.url)));
                 }
 
                 final MediaSource mediaSource =
                         new ConcatenatingMediaSource(sources.toArray(new MediaSource[sources.size()]));
-                /* }}} */
 
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
@@ -387,14 +400,12 @@ public class PlayerController {
 
         @Override
         public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-            if (playbackState == Player.STATE_ENDED) {
-                // ...
-            }
+
         }
 
         @Override
         public void onPositionDiscontinuity(@DiscontinuityReason int reason) {
-            Log.d(">>>", "ContentPosition: " + player.getContentPosition());
+
         }
 
         @Override
@@ -404,7 +415,29 @@ public class PlayerController {
 
         @Override
         public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-            // player.getCurrentWindowIndex();
+            if (player == null || playlist.isEmpty()) {
+                return;
+            }
+
+            int windowIndex = player.getCurrentWindowIndex();
+
+            if (windowIndex >= 0 && windowIndex < playlist.size()) {
+                String videoId = playlist.get(windowIndex).id;
+
+                if (videoId == null) {
+                    return;
+                }
+
+                DocumentReference videoRef = firestore.collection("videos").document(videoId);
+
+                videoRef.update("playbackCounter", FieldValue.increment(1))
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                // ...
+                            }
+                        });
+            }
         }
     }
 }
