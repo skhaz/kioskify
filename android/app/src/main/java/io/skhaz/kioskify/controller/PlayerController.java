@@ -28,6 +28,7 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.util.Log;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.common.base.Strings;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
@@ -49,6 +50,7 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutionException;
 
 import io.skhaz.kioskify.application.Application;
 import io.skhaz.kioskify.helper.DownloadTracker;
@@ -197,15 +199,24 @@ public class PlayerController {
                             return;
                         }
 
-                        messaging.subscribeToTopic(String.format("/topics/%s", groupId.getId()));
+                        List<Task<Void>> tasks = new ArrayList<>();
+
+                        Task<Void> subscribeTask = messaging.subscribeToTopic(
+                                String.format("/topics/%s", groupId.getId()));
+
+                        tasks.add(subscribeTask);
 
                         DocumentReference unsubscribe =
                                 documentSnapshot.getDocumentReference("unsubscribe");
 
                         if (unsubscribe != null) {
-                            messaging.unsubscribeFromTopic(
+                            Task<Void> unsubscribeTask = messaging.unsubscribeFromTopic(
                                     String.format("/topics/%s", unsubscribe.getId()));
+
+                            tasks.add(unsubscribeTask);
                         }
+
+                        try { Tasks.await(Tasks.whenAll(tasks)); } catch (Exception ignored) { }
 
                         innerSubscriber = firestore.collection("v1")
                                 .whereEqualTo("gid", groupId)
