@@ -41,7 +41,7 @@ android {
 
 dependencies {
     implementation 'com.android.support:multidex:1.0.3'
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.10.0ß'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.10.0'
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.10.0'
     implementation 'com.google.firebase:firebase-core:16.0.9'
     implementation 'com.google.firebase:firebase-firestore:19.0.0'
