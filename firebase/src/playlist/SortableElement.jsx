@@ -64,11 +64,11 @@ export default sortableElement(props => {
       return;
     }
 
-    const { error, ready, title, durationInSec, yid } = document;
+    const { error, ready, title, durationInSec, yid, playbackCounter } = document;
 
     const status = stringify(error, ready, title, durationInSec);
 
-    setHolder({ status, ready, title, yid });
+    setHolder({ status, ready, title, yid, playbackCounter });
   };
 
   useEffect(() => {

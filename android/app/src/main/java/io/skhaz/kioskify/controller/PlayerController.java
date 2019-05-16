@@ -18,14 +18,13 @@ import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.Player.DiscontinuityReason;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.LoopingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.util.Log;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -45,6 +44,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -291,7 +291,7 @@ public class PlayerController {
 
         mediaSources.put(entry, video);
 
-        downloadTracker.initDownload(video.url);
+        downloadTracker.addDownload(video.url);
 
         buildPlaylist();
     }
@@ -310,9 +310,7 @@ public class PlayerController {
                 .contains(otherVideo);
 
         if (!preserve) {
-            // TODO
-            // downloadTracker.removeDownload(
-            //        video.guessFileName(), Uri.parse(video.url));
+            downloadTracker.removeDownload(video.url);
         }
 
         buildPlaylist();
@@ -381,13 +379,27 @@ public class PlayerController {
 
     }
 
+    private String getCurrentPlayingVideoId() {
+        if (player == null || playlist.isEmpty()) {
+            return null;
+        }
+
+        int windowIndex = player.getCurrentWindowIndex();
+
+        if (windowIndex < 0 || windowIndex > playlist.size()) {
+            return null;
+        }
+
+        return playlist.get(windowIndex).id;
+    }
+
     private DownloadTracker getDownloadTracker() {
         return ((Application) context.getApplicationContext())
                 .getDownloadTracker();
     }
 
     private MediaSource buildMediaSource(@NonNull Uri uri) {
-        return new ExtractorMediaSource.Factory(dataSourceFactory)
+        return new ProgressiveMediaSource.Factory(dataSourceFactory)
                 .createMediaSource(uri);
     }
 
@@ -409,35 +421,60 @@ public class PlayerController {
         }
 
         @Override
-        public void onPlayerError(ExoPlaybackException e) {
+        public void onPlayerError(ExoPlaybackException error) {
+            switch (error.type) {
+                case ExoPlaybackException.TYPE_SOURCE:
+                    String videoId = getCurrentPlayingVideoId();
 
+                    if (videoId == null) {
+                        return;
+                    }
+
+                    Iterator<Map.Entry<Entry, Video>> iterator =
+                            mediaSources.entrySet().iterator();
+
+                    while (iterator.hasNext()) {
+                        Map.Entry<Entry, Video> entry = iterator.next();
+
+                        if (videoId.equals(entry.getValue().id)) {
+                            iterator.remove();
+                        }
+                    }
+
+                    buildPlaylist();
+                    break;
+
+                case ExoPlaybackException.TYPE_RENDERER:
+                    break;
+
+                case ExoPlaybackException.TYPE_UNEXPECTED:
+                    break;
+
+                case ExoPlaybackException.TYPE_OUT_OF_MEMORY:
+                    break;
+
+                case ExoPlaybackException.TYPE_REMOTE:
+                    break;
+            }
         }
 
         @Override
         public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-            if (player == null || playlist.isEmpty()) {
+            String videoId = getCurrentPlayingVideoId();
+
+            if (videoId == null) {
                 return;
             }
 
-            int windowIndex = player.getCurrentWindowIndex();
+            DocumentReference videoRef = firestore.collection("videos").document(videoId);
 
-            if (windowIndex >= 0 && windowIndex < playlist.size()) {
-                String videoId = playlist.get(windowIndex).id;
-
-                if (videoId == null) {
-                    return;
-                }
-
-                DocumentReference videoRef = firestore.collection("videos").document(videoId);
-
-                videoRef.update("playbackCounter", FieldValue.increment(1))
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                // ...
-                            }
-                        });
-            }
+            videoRef.update("playbackCounter", FieldValue.increment(1))
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            // ...
+                        }
+                    });
         }
     }
 }

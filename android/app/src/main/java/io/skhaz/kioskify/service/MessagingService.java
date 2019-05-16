@@ -30,6 +30,6 @@ public class MessagingService extends FirebaseMessagingService {
 
         String url = data.get("url");
 
-        downloadTracker.initDownload(url);
+        downloadTracker.addDownload(url);
     }
 }
