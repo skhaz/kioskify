@@ -6,7 +6,6 @@ import com.google.android.exoplayer2.offline.Download;
 import com.google.android.exoplayer2.offline.DownloadManager;
 import com.google.android.exoplayer2.scheduler.PlatformScheduler;
 import com.google.android.exoplayer2.ui.DownloadNotificationHelper;
-import com.google.android.exoplayer2.util.NotificationUtil;
 import com.google.android.exoplayer2.util.Util;
 
 import java.util.List;
@@ -18,11 +17,9 @@ public class DownloadService extends com.google.android.exoplayer2.offline.Downl
 
     private static final String CHANNEL_ID = "download_channel";
 
-    private static final int JOB_ID = 1;
+    private static final int JOB_ID = 1001;
 
     private static final int FOREGROUND_NOTIFICATION_ID = 1;
-
-    private static int nextNotificationId = FOREGROUND_NOTIFICATION_ID + 1;
 
     private DownloadNotificationHelper notificationHelper;
 
@@ -32,7 +29,6 @@ public class DownloadService extends com.google.android.exoplayer2.offline.Downl
                 DEFAULT_FOREGROUND_NOTIFICATION_UPDATE_INTERVAL,
                 CHANNEL_ID,
                 R.string.exo_download_notification_channel_name);
-        nextNotificationId = FOREGROUND_NOTIFICATION_ID + 1;
     }
 
     @Override
@@ -54,27 +50,6 @@ public class DownloadService extends com.google.android.exoplayer2.offline.Downl
     @Override
     protected Notification getForegroundNotification(List<Download> downloads) {
         return notificationHelper.buildProgressNotification(
-                R.drawable.ic_launcher_background, /* contentIntent= */ null, /* message= */ null, downloads);
-    }
-
-    @Override
-    protected void onDownloadChanged(Download download) {
-        Notification notification;
-        if (download.state == Download.STATE_COMPLETED) {
-            notification =
-                    notificationHelper.buildDownloadCompletedNotification(
-                            R.drawable.ic_launcher_background,
-                            /* contentIntent= */ null,
-                            Util.fromUtf8Bytes(download.request.data));
-        } else if (download.state == Download.STATE_FAILED) {
-            notification =
-                    notificationHelper.buildDownloadFailedNotification(
-                            R.drawable.ic_launcher_background,
-                            /* contentIntent= */ null,
-                            Util.fromUtf8Bytes(download.request.data));
-        } else {
-            return;
-        }
-        NotificationUtil.setNotification(this, nextNotificationId++, notification);
+                R.drawable.exo_icon_play, null, null, downloads);
     }
 }

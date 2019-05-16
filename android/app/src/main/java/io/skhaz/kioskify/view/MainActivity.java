@@ -13,7 +13,7 @@ import com.google.android.exoplayer2.ui.PlayerView;
 
 import io.skhaz.kioskify.R;
 import io.skhaz.kioskify.controller.PlayerController;
-import io.skhaz.kioskify.controller.RegisterController;
+import io.skhaz.kioskify.helper.PairingHelper;
 
 public class MainActivity extends Activity implements PlaybackPreparer {
 
@@ -23,7 +23,7 @@ public class MainActivity extends Activity implements PlaybackPreparer {
 
     private PlayerController playerController;
 
-    private RegisterController registerController;
+    private PairingHelper pairingHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,7 @@ public class MainActivity extends Activity implements PlaybackPreparer {
         playerView.setPlaybackPreparer(this);
         textView = findViewById(R.id.text_view);
         playerController = new PlayerController(this);
-        registerController = new RegisterController(this);
+        pairingHelper = new PairingHelper(this);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class MainActivity extends Activity implements PlaybackPreparer {
         super.onStart();
 
         playerController.init(playerView);
-        registerController.init(textView);
+        pairingHelper.init(textView);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class MainActivity extends Activity implements PlaybackPreparer {
         super.onStop();
 
         playerController.tearDown();
-        registerController.tearDown();
+        pairingHelper.tearDown();
     }
 
     @Override

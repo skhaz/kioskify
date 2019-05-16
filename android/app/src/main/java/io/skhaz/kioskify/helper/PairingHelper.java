@@ -1,4 +1,4 @@
-package io.skhaz.kioskify.controller;
+package io.skhaz.kioskify.helper;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -26,7 +26,7 @@ import java.util.Random;
 
 import io.skhaz.kioskify.R;
 
-public class RegisterController {
+public class PairingHelper {
 
     public static final String MACHINE_PREFS = "MACHINE_ID";
 
@@ -40,7 +40,7 @@ public class RegisterController {
 
     private TextView textView;
 
-    public RegisterController(Context context) {
+    public PairingHelper(Context context) {
         this.context = context;
         firestore = FirebaseFirestore.getInstance();
     }
