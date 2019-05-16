@@ -28,12 +28,14 @@ public class DownloadService extends com.google.android.exoplayer2.offline.Downl
                 FOREGROUND_NOTIFICATION_ID,
                 DEFAULT_FOREGROUND_NOTIFICATION_UPDATE_INTERVAL,
                 CHANNEL_ID,
-                R.string.exo_download_notification_channel_name);
+                R.string.exo_download_notification_channel_name
+        );
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
+
         notificationHelper = new DownloadNotificationHelper(this, CHANNEL_ID);
     }
 
