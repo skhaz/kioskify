@@ -120,6 +120,10 @@ public class PlayerController {
                         DocumentChange.Type type = change.getType();
                         if (type == DocumentChange.Type.ADDED ||
                                 type == DocumentChange.Type.MODIFIED) {
+                            if (!video.isValid()) {
+                                return;
+                            }
+
                             addEntry(entry, video);
                         } else if (type == DocumentChange.Type.REMOVED) {
                             removeEntry(entry, video);
@@ -379,7 +383,7 @@ public class PlayerController {
 
     }
 
-    private String getCurrentPlayingVideoId() {
+    private @Nullable String getCurrentPlayingVideoId() {
         if (player == null || playlist.isEmpty()) {
             return null;
         }
@@ -422,39 +426,25 @@ public class PlayerController {
 
         @Override
         public void onPlayerError(ExoPlaybackException error) {
-            switch (error.type) {
-                case ExoPlaybackException.TYPE_SOURCE:
-                    String videoId = getCurrentPlayingVideoId();
+            if (error.type == ExoPlaybackException.TYPE_SOURCE) {
+                String videoId = getCurrentPlayingVideoId();
 
-                    if (videoId == null) {
-                        return;
+                if (videoId == null) {
+                    return;
+                }
+
+                Iterator<Map.Entry<Entry, Video>> iterator =
+                        mediaSources.entrySet().iterator();
+
+                while (iterator.hasNext()) {
+                    Map.Entry<Entry, Video> entry = iterator.next();
+
+                    if (videoId.equals(entry.getValue().id)) {
+                        iterator.remove();
                     }
+                }
 
-                    Iterator<Map.Entry<Entry, Video>> iterator =
-                            mediaSources.entrySet().iterator();
-
-                    while (iterator.hasNext()) {
-                        Map.Entry<Entry, Video> entry = iterator.next();
-
-                        if (videoId.equals(entry.getValue().id)) {
-                            iterator.remove();
-                        }
-                    }
-
-                    buildPlaylist();
-                    break;
-
-                case ExoPlaybackException.TYPE_RENDERER:
-                    break;
-
-                case ExoPlaybackException.TYPE_UNEXPECTED:
-                    break;
-
-                case ExoPlaybackException.TYPE_OUT_OF_MEMORY:
-                    break;
-
-                case ExoPlaybackException.TYPE_REMOTE:
-                    break;
+                buildPlaylist();
             }
         }
 
