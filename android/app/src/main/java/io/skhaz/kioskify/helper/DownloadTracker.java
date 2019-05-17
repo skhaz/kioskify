@@ -58,7 +58,7 @@ public class DownloadTracker implements DownloadManager.Listener {
 
         DownloadRequest downloadRequest = downloadHelper.getDownloadRequest(Util.getUtf8Bytes(name));
 
-        SilentDownloadService.sendAddDownload(
+        DownloadService.sendAddDownload(
                 context, SilentDownloadService.class, downloadRequest, false);
     }
 
