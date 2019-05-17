@@ -11,12 +11,13 @@ import com.google.android.exoplayer2.offline.DownloadHelper;
 import com.google.android.exoplayer2.offline.DownloadIndex;
 import com.google.android.exoplayer2.offline.DownloadManager;
 import com.google.android.exoplayer2.offline.DownloadRequest;
+import com.google.android.exoplayer2.offline.DownloadService;
 import com.google.android.exoplayer2.util.Util;
 
 import java.io.IOException;
 import java.util.HashMap;
 
-import io.skhaz.kioskify.service.DownloadService;
+import io.skhaz.kioskify.service.SilentDownloadService;
 
 public class DownloadTracker implements DownloadManager.Listener {
 
@@ -47,7 +48,7 @@ public class DownloadTracker implements DownloadManager.Listener {
     }
 
     public void addDownload(String url) {
-        if (isDownloaded(url)) {
+        if (!URLUtil.isValidUrl(url) || isDownloaded(url)) {
             return;
         }
 
@@ -57,11 +58,15 @@ public class DownloadTracker implements DownloadManager.Listener {
 
         DownloadRequest downloadRequest = downloadHelper.getDownloadRequest(Util.getUtf8Bytes(name));
 
-        DownloadService.sendAddDownload(
-                context, DownloadService.class, downloadRequest, false);
+        SilentDownloadService.sendAddDownload(
+                context, SilentDownloadService.class, downloadRequest, false);
     }
 
     public void removeDownload(String url) {
+        if (!URLUtil.isValidUrl(url) || isDownloaded(url)) {
+            return;
+        }
+
         Download download = downloads.get(Uri.parse(url));
 
         if (download == null) {
@@ -69,7 +74,7 @@ public class DownloadTracker implements DownloadManager.Listener {
         }
 
         DownloadService.sendRemoveDownload(
-                context, DownloadService.class, download.request.id, false);
+                context, SilentDownloadService.class, download.request.id, false);
     }
 
     private class DownloadManagerListener implements DownloadManager.Listener {

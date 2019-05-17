@@ -4,6 +4,7 @@ import android.app.Notification;
 
 import com.google.android.exoplayer2.offline.Download;
 import com.google.android.exoplayer2.offline.DownloadManager;
+import com.google.android.exoplayer2.offline.DownloadService;
 import com.google.android.exoplayer2.scheduler.PlatformScheduler;
 import com.google.android.exoplayer2.ui.DownloadNotificationHelper;
 import com.google.android.exoplayer2.util.Util;
@@ -13,7 +14,7 @@ import java.util.List;
 import io.skhaz.kioskify.R;
 import io.skhaz.kioskify.application.Application;
 
-public class DownloadService extends com.google.android.exoplayer2.offline.DownloadService {
+public class SilentDownloadService extends DownloadService {
 
     private static final String CHANNEL_ID = "download_channel";
 
@@ -23,7 +24,7 @@ public class DownloadService extends com.google.android.exoplayer2.offline.Downl
 
     private DownloadNotificationHelper notificationHelper;
 
-    public DownloadService() {
+    public SilentDownloadService() {
         super(
                 FOREGROUND_NOTIFICATION_ID,
                 DEFAULT_FOREGROUND_NOTIFICATION_UPDATE_INTERVAL,
