@@ -1,34 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { sortableElement } from 'react-sortable-hoc';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import Checkbox from '@material-ui/core/Checkbox';
+import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import { firestore } from '../helpers/firebase';
 
 const useStyles = makeStyles(theme => ({
-  card: {
-    display: 'flex',
 
-    height: 90,
-
-    '&:hover': {
-      textDecoration: 'none',
-      backgroundColor: theme.palette.action.hover
-    }
-  },
-
-  cover: {
-    width: 160,
-    minWidth: 160
-  },
-
-  content: {
-    borderBottom: `1px solid ${theme.palette.divider}`,
-    backgroundClip: 'padding-box',
-    flexGrow: 1
-  }
 }));
 
 export default sortableElement(props => {
@@ -38,19 +21,22 @@ export default sortableElement(props => {
 
   const classes = useStyles();
 
-  const stringify = (error, ready, title, durationInSec) => {
+  const stringify = (error, ready, durationInSec) => {
     if (error) {
       return '⚠︎';
-    } else if (ready) {
-      const date = new Date(durationInSec * 1000);
-      let minutes = date.getUTCMinutes();
-      let seconds = date.getSeconds();
-      minutes = minutes < 10 ? '0' + minutes : minutes;
-      seconds = seconds < 10 ? '0' + seconds : seconds;
-      return [minutes, seconds].join(':');
-    } else if (title) {
-      return '...';
     }
+
+    if (ready) {
+      const date = new Date(durationInSec * 1000);
+      const v1 = date.getUTCMinutes();
+      const v2 = date.getSeconds();
+      const mins = v1 < 10 ? '0' + v1 : v1;
+      const secs = v2 < 10 ? '0' + v2 : v2;
+
+      return [mins, secs].join(':');
+    }
+
+    return '...';
   };
 
   const handleSnapshot = snapshot => {
@@ -64,11 +50,20 @@ export default sortableElement(props => {
       return;
     }
 
-    const { error, ready, title, durationInSec, yid, playbackCounter } = document;
+    const {
+      error,
+      ready,
+      durationInSec,
+      yid,
+    } = document;
 
-    const status = stringify(error, ready, title, durationInSec);
+    const status = stringify(error, ready, durationInSec);
 
-    setHolder({ status, ready, title, yid, playbackCounter });
+    const thumbnail = `https://i.ytimg.com/vi/${yid}/mqdefault.jpg`;
+
+    const title = document.title || `https://www.youtube.com/watch?v=${yid}`;
+
+    setHolder({ status, ready, title, thumbnail });
   };
 
   useEffect(() => {
@@ -83,23 +78,21 @@ export default sortableElement(props => {
   }, []);
 
   return (
-    <Card elevation={0} square className={classes.card}>
+    <ListItem>
       {holder && (
         <>
-          <CardMedia
-            className={classes.cover}
-            image={`https://i.ytimg.com/vi/${holder.yid}/mqdefault.jpg`}
+          <ListItemAvatar>
+            <Avatar src={holder.thumbnail}/>
+          </ListItemAvatar>
+          <ListItemText
+            primary={holder.title}
+            secondary={holder.status}
           />
-          <CardContent className={classes.content}>
-            <Typography component='h6' variant='h6'>
-              {holder.title || `https://www.youtube.com/watch?v=${holder.yid}`}
-            </Typography>
-            <Typography variant='subtitle1' color='textSecondary'>
-              {holder.status}
-            </Typography>
-          </CardContent>
+          <ListItemSecondaryAction>
+            <Checkbox />
+          </ListItemSecondaryAction>
         </>
       )}
-    </Card>
+    </ListItem>
   );
 });

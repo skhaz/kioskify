@@ -47,7 +47,7 @@ export default sortableContainer(({ items, onClick, onDelete }) => {
       </List>
       <Popover
         anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
+        open={!!anchorEl}
         onClose={handleClose}
       >
         <MenuItem onClick={onDelete}>Delete</MenuItem>
