@@ -30,8 +30,6 @@ public class PairingAssistant {
 
     public static final String MACHINE_PREFS = "MACHINE_ID";
 
-    public static final String PINCODE_PREFS = "PIN_CODE";
-
     private Context context;
 
     private FirebaseFirestore firestore;
@@ -89,9 +87,6 @@ public class PairingAssistant {
                     textView.setText(pinCode);
                 }
             });
-
-            sharedPreferences.edit().putString(PINCODE_PREFS, pinCode)
-                    .apply();
 
             textView.setVisibility(View.VISIBLE);
             textView.setText(
