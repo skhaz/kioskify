@@ -152,7 +152,6 @@ public class PlayerController {
 
     public void init(PlayerView playerView) {
         initPlayer(playerView);
-        // initFirebase();
         initSharedPreferences();
     }
 
