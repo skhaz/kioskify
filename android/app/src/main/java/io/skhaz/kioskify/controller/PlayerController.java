@@ -57,7 +57,7 @@ import io.skhaz.kioskify.helper.DownloadTracker;
 import io.skhaz.kioskify.model.Entry;
 import io.skhaz.kioskify.model.Video;
 
-import static io.skhaz.kioskify.helper.PairingHelper.MACHINE_PREFS;
+import static io.skhaz.kioskify.helper.PairingAssistant.MACHINE_PREFS;
 
 public class PlayerController {
 

@@ -26,7 +26,7 @@ import java.util.Random;
 
 import io.skhaz.kioskify.R;
 
-public class PairingHelper {
+public class PairingAssistant {
 
     public static final String MACHINE_PREFS = "MACHINE_ID";
 
@@ -40,7 +40,7 @@ public class PairingHelper {
 
     private TextView textView;
 
-    public PairingHelper(Context context) {
+    public PairingAssistant(Context context) {
         this.context = context;
         firestore = FirebaseFirestore.getInstance();
     }
