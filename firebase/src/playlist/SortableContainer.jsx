@@ -8,7 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import SortableElement from './SortableElement';
 
 const useStyles = makeStyles({
-  list: {
+  root: {
     overflowY: 'auto',
     overflowX: 'hidden',
     height: 'calc(100vh - 96pt)',
@@ -33,7 +33,7 @@ export default sortableContainer(({ items, onClick, onDelete }) => {
 
   return (
     <>
-      <List disablePadding className={classes.list}>
+      <List disablePadding className={classes.root}>
         {items.map((item, index) => (
           <SortableElement
             index={index}

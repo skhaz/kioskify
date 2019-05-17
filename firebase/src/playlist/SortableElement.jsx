@@ -5,14 +5,36 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import Checkbox from '@material-ui/core/Checkbox';
 import Avatar from '@material-ui/core/Avatar';
-import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { firestore } from '../helpers/firebase';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles({
+  root: {
+    alignItems: 'flex-start',
 
-}));
+    backgroundColor: 'white',
+
+    '&:hover': {
+      backgroundColor: 'lightgrey !important'
+    },
+
+    '&$selected': {
+      backgroundColor: 'lightgrey'
+    }
+  },
+
+  thumbnail: {
+    width: 160,
+    height: 90,
+    borderRadius: 0,
+  },
+
+  action: {
+    top: '30%',
+  }
+});
 
 export default sortableElement(props => {
   const { value, selected, onClick, onRightClick } = props;
@@ -78,18 +100,20 @@ export default sortableElement(props => {
   }, []);
 
   return (
-    <ListItem>
+    <ListItem className={classes.root} >
       {holder && (
         <>
           <ListItemAvatar>
-            <Avatar src={holder.thumbnail}/>
+            <Avatar className={classes.thumbnail} src={holder.thumbnail}/>
           </ListItemAvatar>
           <ListItemText
             primary={holder.title}
             secondary={holder.status}
           />
-          <ListItemSecondaryAction>
-            <Checkbox />
+          <ListItemSecondaryAction className={classes.action} >
+            <IconButton>
+              <MoreVertIcon />
+            </IconButton>
           </ListItemSecondaryAction>
         </>
       )}

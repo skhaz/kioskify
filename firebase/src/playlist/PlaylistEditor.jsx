@@ -138,7 +138,7 @@ export default () => {
   };
 
   const handleContextMenu = event => {
-    event.preventDefault();
+    // event.preventDefault();
   };
 
   return (
