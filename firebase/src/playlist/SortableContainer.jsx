@@ -27,9 +27,9 @@ export default sortableContainer(({ items, onClick, onDelete }) => {
     setSelected(item) || (onClick && onClick(item));
   };
 
-  const handleClose = () => setAnchorEl(null);
-
-  const handleRightClick = el => setAnchorEl(el);
+  const handleDelete = () => {
+    setAnchorEl(null) || (onDelete && onDelete(selected))
+  }
 
   return (
     <>
@@ -41,16 +41,15 @@ export default sortableContainer(({ items, onClick, onDelete }) => {
             key={item.id}
             selected={selected === item}
             onClick={handleClick}
-            onRightClick={handleRightClick}
-          />
+            onMenuClick={(element) => { setAnchorEl(element) || setSelected(item) }} />
         ))}
       </List>
       <Popover
         anchorEl={anchorEl}
         open={!!anchorEl}
-        onClose={handleClose}
+        onClose={() => { setAnchorEl(null) }}
       >
-        <MenuItem onClick={onDelete}>Delete</MenuItem>
+        <MenuItem onClick={handleDelete}>Delete</MenuItem>
       </Popover>
     </>
   );

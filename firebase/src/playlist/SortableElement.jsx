@@ -8,6 +8,8 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import { firestore } from '../helpers/firebase';
 
 const useStyles = makeStyles({
@@ -37,7 +39,7 @@ const useStyles = makeStyles({
 });
 
 export default sortableElement(props => {
-  const { value, selected, onClick, onRightClick } = props;
+  const { value, selected, onClick, onMenuClick } = props;
 
   const [holder, setHolder] = useState();
 
@@ -88,6 +90,10 @@ export default sortableElement(props => {
     setHolder({ status, ready, title, thumbnail });
   };
 
+  const handleClick = () => {
+    onClick(value);
+  };
+
   useEffect(() => {
     const { vid: id } = value;
 
@@ -100,18 +106,18 @@ export default sortableElement(props => {
   }, []);
 
   return (
-    <ListItem className={classes.root} >
+    <ListItem className={classes.root} onClick={handleClick}>
       {holder && (
         <>
           <ListItemAvatar>
-            <Avatar className={classes.thumbnail} src={holder.thumbnail}/>
+            <Avatar className={classes.thumbnail} src={holder.thumbnail} />
           </ListItemAvatar>
           <ListItemText
             primary={holder.title}
             secondary={holder.status}
           />
-          <ListItemSecondaryAction className={classes.action} >
-            <IconButton>
+          <ListItemSecondaryAction className={classes.action}>
+            <IconButton onClick={(event) => { onMenuClick(event.currentTarget) }}>
               <MoreVertIcon />
             </IconButton>
           </ListItemSecondaryAction>

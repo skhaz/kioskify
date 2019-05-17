@@ -105,8 +105,8 @@ export default () => {
     setPreview({ open: true, id, title, url });
   };
 
-  const handleDelete = async preview => {
-    return firestore.doc(`v1/${preview.id}`).delete();
+  const handleDelete = async (id) => {
+    return firestore.doc(`v1/${id}`).delete();
   };
 
   const handleSubmit = async yid => {
@@ -150,6 +150,7 @@ export default () => {
         items={items}
         onSortEnd={handleSortEnd}
         onClick={handleClick}
+        onDelete={({ id }) => { handleDelete(id); }}
         distance={2}
         lockAxis='y'
       />
@@ -174,7 +175,7 @@ export default () => {
         url={preview.url}
         title={preview.title}
         onClose={() => setPreview({ open: false })}
-        onDelete={() => handleDelete(preview)}
+        onDelete={() => handleDelete(preview.id)}
       />
     </Paper>
   );
