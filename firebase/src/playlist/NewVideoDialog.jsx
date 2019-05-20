@@ -12,7 +12,7 @@ import withMobileDialog from '@material-ui/core/withMobileDialog';
 export default withMobileDialog()(props => {
   const { fullScreen, open, onClose, onSubmit } = props;
 
-  const [yid, setYid] = useState('');
+  const [id, setId] = useState('');
 
   const [error, setError] = useState(false);
 
@@ -26,23 +26,24 @@ export default withMobileDialog()(props => {
       return;
     }
 
-    setError(!yid);
-  }, [yid]);
+    setError(!id);
+  }, [id]);
 
   const handleChange = event => {
     const { target: { value } } = event;
 
     const { id } = urlParser.parse(value) || {};
 
-    setYid(id);
+    setId(id);
   };
 
   const handleSubmit = () => {
-    if (error || !yid) {
+    if (error || !id) {
       return;
     }
 
-    onSubmit(yid);
+    onSubmit(id);
+    setId('');
   };
 
   const handleKeyPress = event => {
@@ -50,12 +51,6 @@ export default withMobileDialog()(props => {
       event.preventDefault();
       handleSubmit();
     }
-  };
-
-  const handleClick = ({ yid }) => {
-    inputRef.current.value = `https://www.youtube.com/watch?v=${yid}`;
-
-    setYid(yid);
   };
 
   return (
@@ -83,7 +78,7 @@ export default withMobileDialog()(props => {
         <Button onClick={onClose} color='primary'>
           Cancel
         </Button>
-        <Button color='primary' onClick={handleSubmit} disabled={error || !yid}>
+        <Button color='primary' onClick={handleSubmit} disabled={error || !id}>
           Submit
         </Button>
       </DialogActions>

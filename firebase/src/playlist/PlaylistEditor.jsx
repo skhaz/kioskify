@@ -25,8 +25,6 @@ const useStyles = makeStyles(theme => ({
 export default () => {
   const [items, setItems] = useState([]);
 
-  const [videos, setVideos] = useState([]);
-
   const [open, setOpen] = useState(false);
 
   const [preview, setPreview] = useState({ open: false });
@@ -67,20 +65,10 @@ export default () => {
   }, []);
 
   useEffect(() => {
-    const unsubscribe = firestore.collection('videos').onSnapshot(snapshot => {
-      const videos = [];
-
-      snapshot.forEach(doc => {
-        videos.push({ id: doc.id, ...doc.data() });
-      });
-
-      setVideos(videos);
+    debounce(300, () => {
+      publish();
     });
-
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => { publish(); }, [items]);
+  }, [items]);
 
   const handleSortEnd = ({ oldIndex, newIndex }) => {
     if (oldIndex === newIndex) {
