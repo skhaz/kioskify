@@ -28,9 +28,10 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const useMachines = () => {
-  const [loading, setLoading] = useState(true);
-  const [machines, setMachines] = React.useState([]);
+export default () => {
+  const [open, setOpen] = useState(false);
+
+  const [machines, setMachines] = useState([]);
 
   useEffect(() => {
     const { uid } = auth.currentUser;
@@ -46,7 +47,6 @@ const useMachines = () => {
             machines.push({ id: doc.id, ...doc.data() });
           });
 
-          setLoading(false);
           setMachines(machines);
         }
       );
@@ -54,15 +54,7 @@ const useMachines = () => {
     return () => unsubscribe();
   }, []);
 
-  return [loading, machines];
-};
-
-export default () => {
-  const [visible, setVisible] = useState(false);
-
   const classes = useStyles();
-
-  const [loading, machines] = useMachines();
 
   const handleSubmit = async value => {
     if (value.replace(/\s/g, '') === '') {
@@ -105,35 +97,33 @@ export default () => {
   const getPrimary = ({ model, manufacture }) =>
     [model, manufacture].join(' ') || 'Untitled';
 
-  const getSecondary = ({ location }) => location || 'Unknow';
+  const getSecondary = ({ approxLocationn }) => approxLocationn || 'Unknow';
 
   return (
     <Paper className={classes.paper}>
       <List disablePadding className={classes.list}>
-        {!loading && (
-          machines.map(machine => (
-            <ListItem button key={machine.id}>
-              <ListItemText
-                primary={getPrimary(machine)}
-                secondary={getSecondary(machine)}
-              />
-            </ListItem>
-          ))
-        )}
+        {machines.map(machine => (
+          <ListItem button key={machine.id}>
+            <ListItemText
+              primary={getPrimary(machine)}
+              secondary={getSecondary(machine)}
+            />
+          </ListItem>
+        ))}
       </List>
       <Fab
         color='secondary'
         className={classes.fab}
-        onClick={() => setVisible(true)}
+        onClick={() => setOpen(true)}
       >
         <AddIcon />
       </Fab>
       <PairMachineDialog
-        open={visible}
+        open={open}
         onSubmit={value => {
-          setVisible(false) || handleSubmit(value);
+          setOpen(false) || handleSubmit(value);
         }}
-        onClose={() => setVisible(false)}
+        onClose={() => setOpen(false)}
       />
     </Paper>
   );

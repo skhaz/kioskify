@@ -7,15 +7,10 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
 
-const BASE_URL = 'https://www.youtube.com/watch?v=';
-
 export default withMobileDialog()(props => {
-  const { fullScreen, open, videos, onClose, onSubmit } = props;
+  const { fullScreen, open, onClose, onSubmit } = props;
 
   const [yid, setYid] = useState('');
 
@@ -83,19 +78,6 @@ export default withMobileDialog()(props => {
           onChange={handleChange}
           onKeyPress={handleKeyPress}
         />
-        <List disablePadding>
-          {videos.map(video => (
-            <ListItem
-              button
-              key={video.id}
-              onClick={() => {
-                handleClick(video);
-              }}
-            >
-              <ListItemText primary={video.title || `https://www.youtube.com/watch?v=${yid}`} />
-            </ListItem>
-          ))}
-        </List>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color='primary'>

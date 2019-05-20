@@ -27,7 +27,7 @@ export default () => {
 
   const [videos, setVideos] = useState([]);
 
-  const [visible, setVisible] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const [preview, setPreview] = useState({ open: false });
 
@@ -150,18 +150,17 @@ export default () => {
       <Fab
         color='secondary'
         className={classes.fab}
-        onClick={() => setVisible(true)}
+        onClick={() => setOpen(true)}
       >
         <AddIcon />
       </Fab>
       <NewVideoDialog
-        open={visible}
-        videos={videos}
+        open={open}
         onSubmit={value => {
-          setVisible(false);
+          setOpen(false);
           handleSubmit(value);
         }}
-        onClose={() => setVisible(false)}
+        onClose={() => setOpen(false)}
       />
       <PreviewDialog
         open={preview.open}
