@@ -101,7 +101,7 @@ export default () => {
 
     const query1 = await firestore
       .collection('groups')
-      .where('owner', '==', userRef)
+      .where('user', '==', userRef)
       .where('default', '==', true)
       .limit(1)
       .get();
@@ -113,19 +113,14 @@ export default () => {
       .get();
 
       const newRef1 = firestore.collection('groups').doc();
-      const gidRef = query1.empty ? newRef1 : query1.docs[0].ref;
+      const groupRef = query1.empty ? newRef1 : query1.docs[0].ref;
       const newRef2 = firestore.collection('videos').doc();
       const v1Ref = firestore.collection('v1').doc();
-      const docRef = query2.empty ? newRef2 : query2.docs[0].ref;
+      const videoRef = query2.empty ? newRef2 : query2.docs[0].ref;
       const batch = firestore.batch();
-      batch.set(gidRef, { owner: userRef, default: true }, { merge: true });
-      batch.set(docRef, { gid: gidRef, owner: userRef, yid }, { merge: true });
-      batch.set(v1Ref, {
-        gid: gidRef,
-        vid: docRef,
-        owner: userRef,
-        '#': items.length
-      });
+      batch.set(groupRef, { user: userRef, default: true }, { merge: true });
+      batch.set(videoRef, { user: userRef, yid }, { merge: true });
+      batch.set(v1Ref, { group: groupRef, video: videoRef, '#': items.length });
       return batch.commit();
   };
 

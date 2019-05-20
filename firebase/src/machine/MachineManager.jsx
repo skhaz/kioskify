@@ -40,7 +40,7 @@ export default () => {
 
     const unsubscribe = firestore
       .collection('machines')
-      .where('owner', '==', userRef)
+      .where('user', '==', userRef)
       .onSnapshot(snapshot => {
           const machines = [];
 
@@ -83,7 +83,7 @@ export default () => {
 
     const query2 = await firestore
       .collection('groups')
-      .where('owner', '==', userRef)
+      .where('user', '==', userRef)
       .where('default', '==', true)
       .limit(1)
       .get();
@@ -94,8 +94,8 @@ export default () => {
 
     const batch = firestore.batch();
     batch.update(ref, { pinCode: firebase.firestore.FieldValue.delete() });
-    batch.update(ref, { owner: userRef, gid, added: new Date() });
-    batch.set(gid, { owner: userRef, default: true }, { merge: true });
+    batch.update(ref, { user: userRef, gid, added: new Date() });
+    batch.set(gid, { user: userRef, default: true }, { merge: true });
     return batch.commit();
   };
 
