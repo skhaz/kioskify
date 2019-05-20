@@ -8,7 +8,7 @@ import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import firebase from 'firebase/app';
 import { firestore, auth } from '../helpers/firebase';
-import AddDialog from './AddDialog';
+import PairMachineDialog from './PairMachineDialog';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -119,13 +119,6 @@ export default () => {
           ))
         )}
       </List>
-      <AddDialog
-        open={visible}
-        onSubmit={value => {
-          setVisible(false) || handleSubmit(value);
-        }}
-        onClose={() => setVisible(false)}
-      />
       <Fab
         color='secondary'
         className={classes.fab}
@@ -133,6 +126,13 @@ export default () => {
       >
         <AddIcon />
       </Fab>
+      <PairMachineDialog
+        open={visible}
+        onSubmit={value => {
+          setVisible(false) || handleSubmit(value);
+        }}
+        onClose={() => setVisible(false)}
+      />
     </Paper>
   );
 };

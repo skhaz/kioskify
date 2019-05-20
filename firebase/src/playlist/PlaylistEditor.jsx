@@ -6,7 +6,7 @@ import Paper from '@material-ui/core/Paper';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import { firestore, auth } from '../helpers/firebase';
-import AddDialog from './AddDialog';
+import NewVideoDialog from './NewVideoDialog';
 import SortableContainer from './SortableContainer';
 import PreviewDialog from './PreviewDialog';
 
@@ -137,10 +137,6 @@ export default () => {
     return batch.commit();
   };
 
-  const handleContextMenu = event => {
-    // event.preventDefault();
-  };
-
   return (
     <Paper
       className={classes.paper}
@@ -154,7 +150,14 @@ export default () => {
         distance={2}
         lockAxis='y'
       />
-      <AddDialog
+      <Fab
+        color='secondary'
+        className={classes.fab}
+        onClick={() => setVisible(true)}
+      >
+        <AddIcon />
+      </Fab>
+      <NewVideoDialog
         open={visible}
         videos={videos}
         onSubmit={value => {
@@ -163,13 +166,6 @@ export default () => {
         }}
         onClose={() => setVisible(false)}
       />
-      <Fab
-        color='secondary'
-        className={classes.fab}
-        onClick={() => setVisible(true)}
-      >
-        <AddIcon />
-      </Fab>
       <PreviewDialog
         open={preview.open}
         url={preview.url}
