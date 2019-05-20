@@ -19,8 +19,8 @@ exports.onUserSignup = functions.auth
     const userRef = firestore.doc(`users/${uid}`);
     const groupRef = firestore.collection('groups').doc();
     const batch = firestore.batch();
-    batch.set(userRef, { displayName, email });
-    batch.set(groupRef, { owner: userRef , default: true });
+    batch.set(userRef, { displayName, email, joined: new Date() });
+    batch.set(groupRef, { owner: userRef, default: true });
     return batch.commit();
   });
 
