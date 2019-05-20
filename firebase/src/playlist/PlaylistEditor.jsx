@@ -99,7 +99,7 @@ export default () => {
     const { ready, title, url } = document.data();
 
     if (!ready) {
-      return;
+      // return;
     }
 
     setPreview({ open: true, id, title, url });
@@ -138,10 +138,7 @@ export default () => {
   };
 
   return (
-    <Paper
-      className={classes.paper}
-      onContextMenu={handleContextMenu}
-    >
+    <Paper className={classes.paper}>
       <SortableContainer
         items={items}
         onSortEnd={handleSortEnd}

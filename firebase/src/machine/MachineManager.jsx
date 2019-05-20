@@ -29,7 +29,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const useMachines = () => {
-  const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [machines, setMachines] = React.useState([]);
 
@@ -49,14 +48,13 @@ const useMachines = () => {
 
           setLoading(false);
           setMachines(machines);
-        },
-        error => setError(error)
+        }
       );
 
     return () => unsubscribe();
   }, []);
 
-  return [error, loading, machines];
+  return [loading, machines];
 };
 
 export default () => {
@@ -64,7 +62,7 @@ export default () => {
 
   const classes = useStyles();
 
-  const [error, loading, machines] = useMachines();
+  const [loading, machines] = useMachines();
 
   const handleSubmit = async value => {
     if (value.replace(/\s/g, '') === '') {
@@ -79,7 +77,6 @@ export default () => {
 
     if (query1.empty) {
       alert('machine not found or offline!');
-      // ...
       return;
     }
 

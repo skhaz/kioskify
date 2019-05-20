@@ -14,7 +14,7 @@ import withMobileDialog from '@material-ui/core/withMobileDialog';
 
 const BASE_URL = 'https://www.youtube.com/watch?v=';
 
-const AddDialog = props => {
+export default withMobileDialog()(props => {
   const { fullScreen, open, videos, onClose, onSubmit } = props;
 
   const [yid, setYid] = useState('');
@@ -106,6 +106,4 @@ const AddDialog = props => {
       </DialogActions>
     </Dialog>
   );
-};
-
-export default withMobileDialog()(AddDialog);
+});

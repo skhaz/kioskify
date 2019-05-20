@@ -8,7 +8,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
 
-const AddDialog = props => {
+export default withMobileDialog()(props => {
   const { fullScreen, open, onClose, onSubmit } = props;
 
   const [value, setValue] = useState('');
@@ -80,6 +80,4 @@ const AddDialog = props => {
       </DialogActions>
     </Dialog>
   );
-};
-
-export default withMobileDialog()(AddDialog);
+});
