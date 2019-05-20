@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { debounce } from 'throttle-debounce';
 import arrayMove from 'array-move';
 import { makeStyles } from '@material-ui/styles';
 import Paper from '@material-ui/core/Paper';
@@ -64,11 +63,7 @@ export default () => {
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    debounce(300, () => {
-      publish();
-    });
-  }, [items]);
+  useEffect(() => { publish(); }, [items]);
 
   const handleSortEnd = ({ oldIndex, newIndex }) => {
     if (oldIndex === newIndex) {
