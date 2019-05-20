@@ -93,7 +93,9 @@ export default sortableElement(props => {
       .doc(id)
       .onSnapshot(handleSnapshot);
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   return (

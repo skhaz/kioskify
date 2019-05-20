@@ -39,8 +39,7 @@ export default () => {
     const unsubscribe = firestore
       .collection('machines')
       .where('owner', '==', uid)
-      .onSnapshot(
-        snapshot => {
+      .onSnapshot(snapshot => {
           const machines = [];
 
           snapshot.forEach(doc => {
@@ -51,7 +50,9 @@ export default () => {
         }
       );
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   const classes = useStyles();

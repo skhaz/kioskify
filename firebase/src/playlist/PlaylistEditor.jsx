@@ -60,7 +60,9 @@ export default () => {
       .orderBy('#')
       .onSnapshot(onCompletion);
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   useEffect(() => { publish(); }, [items]);
