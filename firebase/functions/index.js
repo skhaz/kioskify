@@ -12,17 +12,19 @@ const storage = admin.storage();
 const settings = functions.config().self;
 const pubsub = new PubSub();
 
-exports.f0 = functions.auth
+exports.onUserSignup = functions.auth
   .user()
   .onCreate(async (user) => {
-    const { uid: owner } = user;
-
-    return firestore
-      .collection('groups')
-      .add({ owner, default: true });
+    const { displayName, email, uid } = user;
+    const userRef = firestore.doc(`users/${uid}`);
+    const groupRef = firestore.collection('groups').doc();
+    const batch = firestore.batch();
+    batch.set(userRef, { displayName, email });
+    batch.set(groupRef, { owner: userRef , default: true });
+    return batch.commit();
   });
 
-exports.f1 = functions.firestore
+exports.onCreateVideo = functions.firestore
   .document('videos/{vid}')
   .onCreate(async (snapshot, { params: { vid } }) => {
     const { yid, gid: { id: gid } } = snapshot.data();
@@ -46,7 +48,7 @@ exports.f1 = functions.firestore
     return Promise.all(promises);
   });
 
-exports.f2 = functions
+exports.onPubSub = functions
   .runWith({ timeoutSeconds: 540, memory: '2GB' })
   .pubsub.topic(settings.topic)
   .onPublish(({ json: { url, gid, vid } }) => {
@@ -86,7 +88,7 @@ exports.f2 = functions
     });
   });
 
-exports.f3 = functions.storage
+exports.onStorage = functions.storage
   .bucket(settings.bucket)
   .object()
   .onFinalize(async ({ bucket, contentType, name }) => {
@@ -96,16 +98,16 @@ exports.f3 = functions.storage
 
     const { name: vid, dir: gid } = path.parse(name);
 
-    const ref = firestore.collection('videos').doc(vid);
-
     const url = require('url')
       .resolve(['https', bucket].join('://'), name);
 
-    const p1 = ref.update({ ready: true, url });
+    const videoRef = firestore.doc(`videos/${vid}`);
+
+    const p1 = videoRef.update({ ready: true, url });
 
     const p2 = firestore
       .collection('v1')
-      .where('vid', '==', ref)
+      .where('vid', '==', videoRef)
       .get()
       .then(docs => {
         const batch = firestore.batch();

@@ -2,7 +2,7 @@ import './helpers/bootstrap';
 import React, { useState, useEffect } from 'react';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
-import { red, blue } from '@material-ui/core/colors';
+import { deepPurple, deepOrange } from '@material-ui/core/colors';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
@@ -98,8 +98,8 @@ const App = () => {
 export default () => {
   const theme = createMuiTheme({
     palette: {
-      primary: blue,
-      secondary: red,
+      primary: deepPurple,
+      secondary: deepOrange,
     },
 
     typography: {

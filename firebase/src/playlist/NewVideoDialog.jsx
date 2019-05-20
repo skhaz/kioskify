@@ -43,6 +43,7 @@ export default withMobileDialog()(props => {
     }
 
     onSubmit(id);
+
     setId('');
   };
 
