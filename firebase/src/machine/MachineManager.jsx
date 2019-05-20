@@ -36,9 +36,11 @@ export default () => {
   useEffect(() => {
     const { uid } = auth.currentUser;
 
+    const userRef = firestore.doc(`users/${uid}`);
+
     const unsubscribe = firestore
       .collection('machines')
-      .where('owner', '==', uid)
+      .where('owner', '==', userRef)
       .onSnapshot(snapshot => {
           const machines = [];
 
@@ -75,11 +77,13 @@ export default () => {
 
     const { ref } = query1.docs[0];
 
-    const { uid: owner } = auth.currentUser;
+    const { uid } = auth.currentUser;
+
+    const userRef = firestore.doc(`users/${uid}`);
 
     const query2 = await firestore
       .collection('groups')
-      .where('owner', '==', owner)
+      .where('owner', '==', userRef)
       .where('default', '==', true)
       .limit(1)
       .get();
@@ -90,8 +94,8 @@ export default () => {
 
     const batch = firestore.batch();
     batch.update(ref, { pinCode: firebase.firestore.FieldValue.delete() });
-    batch.update(ref, { owner, gid, added: new Date() });
-    batch.set(gid, { owner, default: true }, { merge: true });
+    batch.update(ref, { owner: userRef, gid, added: new Date() });
+    batch.set(gid, { owner: userRef, default: true }, { merge: true });
     return batch.commit();
   };
 

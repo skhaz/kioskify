@@ -94,12 +94,14 @@ export default () => {
     return firestore.doc(`v1/${id}`).delete();
   };
 
-  const handleSubmit = async yid => {
-    const { uid: owner } = auth.currentUser;
+  const handleSubmit = async (yid) => {
+    const { uid } = auth.currentUser;
+
+    const userRef = firestore.doc(`users/${uid}`);
 
     const query1 = await firestore
       .collection('groups')
-      .where('owner', '==', owner)
+      .where('owner', '==', userRef)
       .where('default', '==', true)
       .limit(1)
       .get();
@@ -110,16 +112,21 @@ export default () => {
       .limit(1)
       .get();
 
-    const batch = firestore.batch();
-    const newRef1 = firestore.collection('groups').doc();
-    const gidRef = query1.empty ? newRef1 : query1.docs[0].ref;
-    const newRef2 = firestore.collection('videos').doc();
-    const docRef = query2.empty ? newRef2 : query2.docs[0].ref;
-    batch.set(gidRef, { owner, default: true }, { merge: true });
-    batch.set(docRef, { yid, gid: gidRef, owner, added: new Date() }, { merge: true });
-    const v1Ref = firestore.collection('v1').doc();
-    batch.set(v1Ref, { gid: gidRef, vid: docRef, owner, '#': items.length });
-    return batch.commit();
+      const newRef1 = firestore.collection('groups').doc();
+      const gidRef = query1.empty ? newRef1 : query1.docs[0].ref;
+      const newRef2 = firestore.collection('videos').doc();
+      const v1Ref = firestore.collection('v1').doc();
+      const docRef = query2.empty ? newRef2 : query2.docs[0].ref;
+      const batch = firestore.batch();
+      batch.set(gidRef, { owner: userRef, default: true }, { merge: true });
+      batch.set(docRef, { gid: gidRef, owner: userRef, yid }, { merge: true });
+      batch.set(v1Ref, {
+        gid: gidRef,
+        vid: docRef,
+        owner: userRef,
+        '#': items.length
+      });
+      return batch.commit();
   };
 
   return (
