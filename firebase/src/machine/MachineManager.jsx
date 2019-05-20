@@ -102,6 +102,11 @@ export default () => {
     return batch.commit();
   };
 
+  const getPrimary = ({ model, manufacture }) =>
+    [model, manufacture].join(' ') || 'Untitled';
+
+  const getSecondary = ({ location }) => location || 'Unknow';
+
   return (
     <Paper className={classes.paper}>
       <List disablePadding className={classes.list}>
@@ -109,8 +114,8 @@ export default () => {
           machines.map(machine => (
             <ListItem button key={machine.id}>
               <ListItemText
-                primary={machine.model || 'Untitled'}
-                secondary={machine.manufacture || 'Unknow'}
+                primary={getPrimary(machine)}
+                secondary={getSecondary(machine)}
               />
             </ListItem>
           ))

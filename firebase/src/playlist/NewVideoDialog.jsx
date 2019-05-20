@@ -58,7 +58,8 @@ export default withMobileDialog()(props => {
   };
 
   const handleClick = ({ yid }) => {
-    inputRef.current.value = `${BASE_URL + yid}`
+    inputRef.current.value = `https://www.youtube.com/watch?v=${yid}`;
+
     setYid(yid);
   };
 
@@ -76,7 +77,7 @@ export default withMobileDialog()(props => {
           type='url'
           inputRef={inputRef}
           error={error}
-          placeholder={`${BASE_URL}...`}
+          placeholder={'https://www.youtube.com/watch?v=...'}
           fullWidth
           autoFocus
           onChange={handleChange}
@@ -91,7 +92,7 @@ export default withMobileDialog()(props => {
                 handleClick(video);
               }}
             >
-              <ListItemText primary={video.title || `${BASE_URL + video.yid}`} />
+              <ListItemText primary={video.title || `https://www.youtube.com/watch?v=${yid}`} />
             </ListItem>
           ))}
         </List>
