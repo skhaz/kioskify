@@ -8,9 +8,9 @@ public class Entry extends BaseModel {
     @PropertyName("#")
     public int index;
 
-    @PropertyName("vid")
+    @PropertyName("video")
     public DocumentReference videoRef;
 
-    @PropertyName("gid")
-    public DocumentReference groupRef;
+    // @PropertyName("group")
+    // public DocumentReference groupRef;
 }

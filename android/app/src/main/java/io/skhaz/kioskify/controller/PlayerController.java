@@ -197,16 +197,16 @@ public class PlayerController {
                             innerSubscriber = null;
                         }
 
-                        DocumentReference groupId =
-                                documentSnapshot.getDocumentReference("gid");
+                        DocumentReference groupRef =
+                                documentSnapshot.getDocumentReference("group");
 
-                        if (groupId == null) {
+                        if (groupRef == null) {
                             return;
                         }
 
                         List<Task<Void>> tasks = new ArrayList<>();
 
-                        Task<Void> subscribeTask = messaging.subscribeToTopic(groupId.getId());
+                        Task<Void> subscribeTask = messaging.subscribeToTopic(groupRef.getId());
 
                         tasks.add(subscribeTask);
 
@@ -229,7 +229,7 @@ public class PlayerController {
                         });
 
                         innerSubscriber = firestore.collection("v1")
-                                .whereEqualTo("gid", groupId)
+                                .whereEqualTo("group", groupRef)
                                 .addSnapshotListener(onSnapshot);
                     }
                 });

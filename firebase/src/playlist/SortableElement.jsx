@@ -34,6 +34,7 @@ const useStyles = makeStyles({
 });
 
 export default sortableElement(props => {
+
   const { value, selected, onClick } = props;
 
   const [holder, setHolder] = useState();

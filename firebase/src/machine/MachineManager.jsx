@@ -29,6 +29,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default () => {
+
   const [open, setOpen] = useState(false);
 
   const [machines, setMachines] = useState([]);
@@ -75,7 +76,7 @@ export default () => {
       return;
     }
 
-    const { ref } = query1.docs[0];
+    const { ref: docRef } = query1.docs[0];
 
     const { uid } = auth.currentUser;
 
@@ -88,14 +89,14 @@ export default () => {
       .limit(1)
       .get();
 
-    const gid = query2.empty
+    const groupRef = query2.empty
       ? firestore.collection('groups').doc()
       : query2.docs[0].ref;
 
     const batch = firestore.batch();
-    batch.update(ref, { pinCode: firebase.firestore.FieldValue.delete() });
-    batch.update(ref, { user: userRef, gid, added: new Date() });
-    batch.set(gid, { user: userRef, default: true }, { merge: true });
+    batch.update(docRef, { pinCode: firebase.firestore.FieldValue.delete() });
+    batch.update(docRef, { user: userRef, group: groupRef, added: new Date() });
+    batch.set(groupRef, { user: userRef, default: true }, { merge: true });
     return batch.commit();
   };
 

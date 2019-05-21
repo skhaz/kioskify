@@ -22,6 +22,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default () => {
+
   const [items, setItems] = useState([]);
 
   const [open, setOpen] = useState(false);
@@ -44,7 +45,7 @@ export default () => {
     const arr = [];
 
     querySnapshot.forEach(document => {
-      const { vid: { id: vid }, '#': index } = document.data();
+      const { video: { id: vid }, '#': index } = document.data();
 
       const { id } = document;
 
@@ -119,7 +120,7 @@ export default () => {
       const videoRef = query2.empty ? newRef2 : query2.docs[0].ref;
       const batch = firestore.batch();
       batch.set(groupRef, { user: userRef, default: true }, { merge: true });
-      batch.set(videoRef, { user: userRef, yid }, { merge: true });
+      batch.set(videoRef, { user: userRef, group: groupRef, yid }, { merge: true });
       batch.set(v1Ref, { group: groupRef, video: videoRef, '#': items.length });
       return batch.commit();
   };

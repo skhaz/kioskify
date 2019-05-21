@@ -10,6 +10,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
 
 export default withMobileDialog()(props => {
+
   const { fullScreen, open, onClose, onSubmit } = props;
 
   const [id, setId] = useState('');
@@ -80,7 +81,7 @@ export default withMobileDialog()(props => {
           Cancel
         </Button>
         <Button color='primary' onClick={handleSubmit} disabled={error || !id}>
-          Submit
+          Add
         </Button>
       </DialogActions>
     </Dialog>

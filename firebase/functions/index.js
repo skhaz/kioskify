@@ -17,17 +17,16 @@ exports.onUserSignup = functions.auth
   .onCreate(async (user) => {
     const { displayName, email, uid } = user;
     const userRef = firestore.doc(`users/${uid}`);
-    const groupRef = firestore.collection('groups').doc();
+
     const batch = firestore.batch();
     batch.set(userRef, { displayName, email, joined: new Date() });
-    batch.set(groupRef, { owner: userRef, default: true });
     return batch.commit();
   });
 
 exports.onCreateVideo = functions.firestore
   .document('videos/{vid}')
   .onCreate(async (snapshot, { params: { vid } }) => {
-    const { yid, gid: { id: gid } } = snapshot.data();
+    const { yid, group: { id: gid } } = snapshot.data();
     const { formats, title, length_seconds } = await ytdl.getInfo(yid);
     const durationInSec = parseInt(length_seconds, 10);
     const filter = format => format.container === 'mp4'
@@ -107,7 +106,7 @@ exports.onStorage = functions.storage
 
     const p2 = firestore
       .collection('v1')
-      .where('vid', '==', videoRef)
+      .where('video', '==', videoRef)
       .get()
       .then(docs => {
         const batch = firestore.batch();
