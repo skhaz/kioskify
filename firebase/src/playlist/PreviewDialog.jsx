@@ -6,7 +6,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 import FilePlayer from 'react-player';
 
-export default withMobileDialog()(props => {
+export default withMobileDialog = props => {
   const { fullScreen, open, onClose, onDelete, url, title } = props;
 
   const [controls, setControls] = useState(false);
