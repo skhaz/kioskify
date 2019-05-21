@@ -10,7 +10,7 @@ import Tab from '@material-ui/core/Tab';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import { auth } from './helpers/firebase';
 import PlaylistEditor from './playlist/PlaylistEditor';
 import MachineManager from './machine/MachineManager';

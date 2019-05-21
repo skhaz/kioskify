@@ -9,6 +9,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
 
 export default withMobileDialog()(props => {
+
   const { fullScreen, open, onClose, onSubmit } = props;
 
   const [value, setValue] = useState('');
