@@ -100,28 +100,31 @@ export default () => {
 
     const userRef = firestore.doc(`users/${uid}`);
 
-    const query1 = await firestore
+    const groupQuery = await firestore
       .collection('groups')
       .where('user', '==', userRef)
       .where('default', '==', true)
       .limit(1)
       .get();
 
-    const query2 = await firestore
+    const videoQuery = await firestore
       .collection('videos')
       .where('yid', '==', yid)
       .limit(1)
       .get();
 
       const newRef1 = firestore.collection('groups').doc();
-      const groupRef = query1.empty ? newRef1 : query1.docs[0].ref;
+      const groupRef = groupQuery.empty ? newRef1 : groupQuery.docs[0].ref;
       const newRef2 = firestore.collection('videos').doc();
       const v1Ref = firestore.collection('v1').doc();
-      const videoRef = query2.empty ? newRef2 : query2.docs[0].ref;
+      const videoRef = videoQuery.empty ? newRef2 : videoQuery.docs[0].ref;
       const batch = firestore.batch();
       batch.set(groupRef, { user: userRef, default: true }, { merge: true });
       batch.set(videoRef, { user: userRef, group: groupRef, yid }, { merge: true });
       batch.set(v1Ref, { group: groupRef, video: videoRef, '#': items.length });
+      if (!videoQuery.empty) {
+        batch.update(v1Ref, { enabled: true });
+      }
       return batch.commit();
   };
 
