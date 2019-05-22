@@ -117,14 +117,21 @@ export default () => {
       const groupRef = groupQuery.empty ? newRef1 : groupQuery.docs[0].ref;
       const newRef2 = firestore.collection('videos').doc();
       const v1Ref = firestore.collection('v1').doc();
-      const videoRef = videoQuery.empty ? newRef2 : videoQuery.docs[0].ref;
+      const alreadyExists = !videoQuery.empty;
+      const videoRef = alreadyExists ? videoQuery.docs[0].ref : newRef2;
       const batch = firestore.batch();
       batch.set(groupRef, { user: userRef, default: true }, { merge: true });
       batch.set(videoRef, { user: userRef, group: groupRef, yid }, { merge: true });
-      batch.set(v1Ref, { group: groupRef, video: videoRef, '#': items.length });
-      if (!videoQuery.empty) {
-        batch.update(v1Ref, { enabled: true });
+      batch.set(v1Ref, { video: videoRef, group: groupRef, '#': items.length });
+
+      if (alreadyExists) {
+        const document = await videoRef.get();
+
+        if (document.data().ready) {
+          batch.update(v1Ref, { enabled: true });
+        }
       }
+
       return batch.commit();
   };
 

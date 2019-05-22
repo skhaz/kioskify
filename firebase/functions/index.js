@@ -14,13 +14,8 @@ const pubsub = new PubSub();
 
 exports.onUserSignup = functions.auth
   .user()
-  .onCreate(async (user) => {
-    const { displayName, email, uid } = user;
-    const userRef = firestore.doc(`users/${uid}`);
-
-    const batch = firestore.batch();
-    batch.set(userRef, { displayName, email, joined: new Date() });
-    return batch.commit();
+  .onCreate(({ displayName, email, uid }) => {
+    return firestore.doc(`users/${uid}`).set({ displayName, email });
   });
 
 exports.onCreateVideo = functions.firestore
@@ -108,10 +103,10 @@ exports.onStorage = functions.storage
       .collection('v1')
       .where('video', '==', videoRef)
       .get()
-      .then(docs => {
+      .then(documents => {
         const batch = firestore.batch();
-        docs.forEach(doc =>
-          batch.set(doc.ref, { enabled: true }, { merge: true }));
+        documents.forEach(document =>
+          batch.update(document.ref, { enabled: true }));
         return batch.commit();
       });
 

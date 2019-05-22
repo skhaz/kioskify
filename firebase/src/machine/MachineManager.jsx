@@ -29,7 +29,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default () => {
-
   const [open, setOpen] = useState(false);
 
   const [machines, setMachines] = useState([]);
@@ -43,15 +42,14 @@ export default () => {
       .collection('machines')
       .where('user', '==', userRef)
       .onSnapshot(snapshot => {
-          const machines = [];
+        const machines = [];
 
-          snapshot.forEach(doc => {
-            machines.push({ id: doc.id, ...doc.data() });
-          });
+        snapshot.forEach(doc => {
+          machines.push({ id: doc.id, ...doc.data() });
+        });
 
-          setMachines(machines);
-        }
-      );
+        setMachines(machines);
+      });
 
     return () => {
       unsubscribe();
@@ -65,37 +63,41 @@ export default () => {
       return;
     }
 
-    const query1 = await firestore
+    const machineQuery = await firestore
       .collection('machines')
       .where('pinCode', '==', value.toUpperCase())
       .limit(1)
       .get();
 
-    if (query1.empty) {
+    if (machineQuery.empty) {
       alert('machine not found or offline!');
       return;
     }
 
-    const { ref: docRef } = query1.docs[0];
+    const { ref: machineRef } = machineQuery.docs[0];
 
     const { uid } = auth.currentUser;
 
     const userRef = firestore.doc(`users/${uid}`);
 
-    const query2 = await firestore
+    const groupQuery = await firestore
       .collection('groups')
       .where('user', '==', userRef)
       .where('default', '==', true)
       .limit(1)
       .get();
 
-    const groupRef = query2.empty
+    const groupRef = groupQuery.empty
       ? firestore.collection('groups').doc()
-      : query2.docs[0].ref;
+      : groupQuery.docs[0].ref;
 
     const batch = firestore.batch();
-    batch.update(docRef, { pinCode: firebase.firestore.FieldValue.delete() });
-    batch.update(docRef, { user: userRef, group: groupRef, added: new Date() });
+    batch.update(machineRef, { pinCode: firebase.firestore.FieldValue.delete() });
+    batch.update(machineRef, {
+      user: userRef,
+      group: groupRef,
+      added: new Date()
+    });
     batch.set(groupRef, { user: userRef, default: true }, { merge: true });
     return batch.commit();
   };
